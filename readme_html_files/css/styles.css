@@ -18,9 +18,13 @@ html {
 body {
     background-color: black;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     color: hsl(0, 0%, 60%);
+    margin-left: 15px;
+    margin-right: 15px;
+
+    transition: margin 0.25s ease;
 }
 
 body.modal-open {
@@ -31,6 +35,50 @@ body.modal-open {
 
 p {
     
+}
+
+html.sidebarIframeLoaded #sidebar {
+    width: 300px;
+    opacity: 1;
+}
+
+#sidebar {
+    opacity: 0;
+    display: block;
+    overflow: hidden;
+    width: 0px;
+    margin-top: var(--main-margin);
+    margin-right: 20px;
+    height: calc(100vh - ( var(--main-margin) * 2) );
+    transition: width 0.25s ease, margin 0.25s ease;
+}
+
+#sidebar .sidebarTitle {
+    height: 40px;
+    background: hsl(0, 0%, 24%);
+    display: flex;
+    padding-left: 15px;
+    padding-right: 15px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#sidebar #sidebarCloseBtn {
+    z-index: 100;
+    right: 0;
+}
+
+#sidebar .sidebarFixed {
+    height: calc(100vh - (var(--main-margin) * 2) );
+    overflow: hidden;
+    width: 300px;
+    position: fixed;
+    transition: width 0.25s ease;
+}
+
+#sidebar iframe {
+    height: calc(100% - 40px);
+    width: 300px;
 }
 
 .main {
@@ -416,6 +464,23 @@ li {
     margin-right: 5px;
 }
 
+@media (max-width: 1200px) {
+
+    #sidebar,
+    html.sidebarIframeLoaded #sidebar,   
+    #sidebar .sidebarFixed,   
+    html.sidebarIframeLoaded #sidebar .sidebarFixed
+    {
+        width: 0px;
+        margin-right: 0px;
+    }
+
+    body {
+        margin: 0px;
+    }
+
+}
+
 @media (max-width: 1024px) {
 
     :root {
@@ -507,6 +572,9 @@ li {
         --main-padding: 15px;
         --main-width: 100%;
     }
+
+
+
 
     .pageTitle {
         font-size: 1.5em;

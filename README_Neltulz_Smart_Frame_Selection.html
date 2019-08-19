@@ -21,6 +21,28 @@
 
     <body>
 
+        <script type="text/javascript">
+
+            function sidebarIframeLoaded() {
+                $( document ).ready(function() {
+                    $('html').addClass('sidebarIframeLoaded')
+                });
+            }
+            
+            
+        
+        </script>
+
+        <aside id="sidebar">
+            <div class="sidebarFixed">
+                <div class="sidebarTitle">All Addons 
+                </div>
+                
+                <iframe onload="sidebarIframeLoaded()" src="https://www.logichaos.com/neltulz_blender_addons/neltulz_addon_sidebar/neltulz_addons_sidebar.html" frameborder="0"></iframe>
+            </div>
+    
+        </aside>
+
         <div class='modal fade' id='licenseModal'>
             <div class='modal-dialog modal-lg'>
                 <div class='modal-content'>
@@ -265,6 +287,7 @@
                 <li>JordanS</li>
                 <li>Bobbe</li>
                 <li>Don'tKnow</li>
+                <li>cytoo - For bug reporting and feature requests</li>
                 <li>Anyone I forgot</li>
             </ul>
 
