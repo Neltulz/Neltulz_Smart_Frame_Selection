@@ -3,7 +3,7 @@ bl_info = {
     "author" : "Neil V. Moore",
     "description" : 'More ways to "Frame Selection" when pressing the keyboard shortcut',
     "blender" : (2, 80, 0),
-    "version" : (1, 0, 1),
+    "version" : (1, 0, 2),
     "location" : "View3D",
     "warning" : "",
     "category" : "Generic",
@@ -19,7 +19,6 @@ import bpy
 
 from . properties import NeltulzSmartFrameSel_IgnitProperties
 from . main_ot import OBJECT_OT_NeltulzSmartFrameSel
-from . panels import OBJECT_PT_NeltulzSmartFrameSel
 
 from . import keymaps
 
@@ -33,7 +32,6 @@ PendingDeprecationWarning
 classes = (
     NeltulzSmartFrameSel_IgnitProperties,
     OBJECT_OT_NeltulzSmartFrameSel,
-    OBJECT_PT_NeltulzSmartFrameSel,
 )
 
 # -----------------------------------------------------------------------------
