@@ -304,6 +304,12 @@ li {
     transition: font-size 0.25s ease;
 }
 
+.pageTitle .versionNum {
+    font-size: 1.25rem;
+    margin-top: 0.7rem;
+    line-height: 1.5;
+}
+
 .versionAndDownloadBar {
     margin-bottom: 1rem;
     display: flex;
@@ -342,7 +348,7 @@ li {
     font-weight: 100;
 }
 
-.versionAndDownloadBar .badge .text .versionNum {
+.versionAndDownloadBar .badge .text .versionText {
     font-weight: bold;
     font-size: 0.8rem;
 }
