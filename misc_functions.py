@@ -79,8 +79,9 @@ def hideUnselected_Objs(self, context, scene, obj_sel):
     #loop through all objects in scene and put a custom prop so we know which objects to unhide
     for obj in bpy.context.scene.objects:
         if obj not in obj_sel:
-            obj['neltulzSmartFrameSel_hidden'] = 1
-            foundObjectToHide = True
+            if obj.visible_get(): #ensure object is visible, that way later on, user preferred hidden objects don't get revealed accidentally
+                obj['neltulzSmartFrameSel_hidden'] = 1
+                foundObjectToHide = True
             
     if foundObjectToHide:
         scene.neltulzSmartFrameSel.currentlyBusyIsolating = True
