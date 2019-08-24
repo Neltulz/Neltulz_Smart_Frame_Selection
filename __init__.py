@@ -3,7 +3,7 @@ bl_info = {
     "author" : "Neil V. Moore",
     "description" : 'More ways to "Frame Selection" when pressing the keyboard shortcut',
     "blender" : (2, 80, 0),
-    "version" : (1, 0, 2),
+    "version" : (1, 0, 3),
     "location" : "View3D",
     "warning" : "",
     "category" : "Generic",
@@ -19,6 +19,8 @@ import bpy
 
 from . properties import NeltulzSmartFrameSel_IgnitProperties
 from . main_ot import OBJECT_OT_NeltulzSmartFrameSel
+from . addon_preferences import OBJECT_OT_NeltulzSmartFrameSel_Preferences
+from . panels import OBJECT_PT_NeltulzSmartFrameSel
 
 from . import keymaps
 
@@ -32,6 +34,8 @@ PendingDeprecationWarning
 classes = (
     NeltulzSmartFrameSel_IgnitProperties,
     OBJECT_OT_NeltulzSmartFrameSel,
+    OBJECT_OT_NeltulzSmartFrameSel_Preferences,
+    OBJECT_PT_NeltulzSmartFrameSel,
 )
 
 # -----------------------------------------------------------------------------
@@ -44,6 +48,9 @@ def register():
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
+
+    # update panel name
+    addon_preferences.update_panel(None, bpy.context)
 
     #add keymaps from keymaps.py
     keymaps.neltulz_smart_frame_sel_register_keymaps(addon_keymaps)

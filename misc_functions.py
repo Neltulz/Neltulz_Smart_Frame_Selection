@@ -71,3 +71,42 @@ def getAllEdges(self, context, obj):
     bpy.ops.object.mode_set(mode='EDIT')
         
     return edgeList
+
+def hideUnselected_Objs(self, context, scene, obj_sel):
+
+    foundObjectToHide = False #initial declare
+
+    #loop through all objects in scene and put a custom prop so we know which objects to unhide
+    for obj in bpy.context.scene.objects:
+        if obj not in obj_sel:
+            obj['neltulzSmartFrameSel_hidden'] = 1
+            foundObjectToHide = True
+            
+    if foundObjectToHide:
+        scene.neltulzSmartFrameSel.currentlyBusyIsolating = True
+
+        #hide all but selected
+        bpy.ops.object.hide_view_set(unselected=True)
+
+        foundObjectToHide = False #reset
+
+    
+
+def unhidePreviouslyHidden_Objs(self, context, scene):
+    #loop through all objects in scene check the custom prop
+    for obj in bpy.context.scene.objects:
+        if 'neltulzSmartFrameSel_hidden' in obj:
+            if obj['neltulzSmartFrameSel_hidden'] == 1:
+                obj.hide_set(False) #unhide object
+                del obj['neltulzSmartFrameSel_hidden']
+
+    scene.neltulzSmartFrameSel.currentlyBusyIsolating = False
+
+
+def hideSelected_VertsEdgesFaces(self, context, scene):
+    bpy.ops.mesh.hide(unselected=True)
+    scene.neltulzSmartFrameSel.currentlyBusyIsolating = True
+
+def unhidePreviouslyHidden_VertsEdgesFaces(self, context, scene):
+    bpy.ops.mesh.reveal(select=False)
+    scene.neltulzSmartFrameSel.currentlyBusyIsolating = False

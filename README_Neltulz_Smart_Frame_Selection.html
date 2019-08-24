@@ -73,7 +73,7 @@
             </picture>
 
             <h1 class="pageTitle">
-                Neltulz - Smart Frame Selection<br><span class="versionNum">Version: 1.0.2<br>Last Update: 8/19/2019</span>
+                Neltulz - Smart Frame Selection<br><span class="versionNum">Version: 1.0.3<br>Last Update: 8/24/2019</span>
             </h1>
 
             <div class="versionAndDownloadBar">
@@ -201,11 +201,26 @@
                         </tr>
                     </thead>
                     <tbody>
+                        
                         <tr>
                             <td class="hotkey primary">F</td>
-                            <td class="result success">Frame Selection or Frame All</td>
+                            <td class="result success">Frame</td>
                             <td class="command">object.neltulz_smart_frame_sel</td>
-                            <td class="properties">None</td>
+                            <td class="properties">frameSelection = True<br>isolateSelection = False</td>
+                        </tr>
+
+                        <tr>
+                            <td class="hotkey primary">SHIFT+F</td>
+                            <td class="result success">Isolate</td>
+                            <td class="command">object.neltulz_smart_frame_sel</td>
+                            <td class="properties">frameSelection = False<br>isolateSelection = True</td>
+                        </tr>
+
+                        <tr>
+                            <td class="hotkey primary">CTRL+SHIFT+F</td>
+                            <td class="result success">Frame & Isolate</td>
+                            <td class="command">object.neltulz_smart_frame_sel</td>
+                            <td class="properties">frameSelection = True<br>isolateSelection = True</td>
                         </tr>
 
                     </tbody>
@@ -216,7 +231,8 @@
             <h3 id="knownIssues">Known Issues & Limitations</h3>
 
             <ul>
-                <li>None yet.</li>
+                <li>If you isolate while in object mode, then try to isolate again while in edit mode, you'll have to
+                perform the "isolate" operator twice to get it to work.</li>
             </ul>
 
             <h3 id="license">License</h3>
@@ -269,6 +285,15 @@
             <h3 id="changelog">Changelog</h3>
 
                 <ul>
+                    <li>2019-08-20
+                        <ul>
+                            <li>Added isolate support</li>
+                            <li>Framing while nothing is selected now frames only selected mesh objects by default</li>
+                            <li>Configure exactly what is framed when nothing is selected.</li>
+                            <li>Sidebar Pane with buttons</li>
+                            <li>2 new hotkeys (SHIFT+F to Isolate) (CTRL+SHIFT+F to Frame & Isolate)</li>
+                        </ul>
+                    </li>
                     <li>2019-08-19 - Fixed panel showing things from another addon.  Disabled panel until needed.</li>
                     <li>2019-08-18 - Changed license from "CC BY 4.0" to <span class="focusText">GNU GPL v3.0</span> because it's easier to select on Github</li>
                     <li>2019-08-17 - First release!</li>

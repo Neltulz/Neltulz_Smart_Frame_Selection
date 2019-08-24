@@ -10,9 +10,20 @@ def neltulz_smart_frame_sel_register_keymaps(addon_keymaps):
     wm = bpy.context.window_manager
 
     def createSmartFrameSelKeymap():
-        #create shortcuts for keymap
+        #Frame
         kmi = km.keymap_items.new("object.neltulz_smart_frame_sel", type = "F", ctrl=False, shift=False, alt=False, value = "PRESS")
-        #kmi.properties.PROPERTYNAME = 1
+        kmi.properties.frameSelection = True
+        kmi.properties.isolateSelection = False
+
+        #Isolate / Unhide Selection
+        kmi = km.keymap_items.new("object.neltulz_smart_frame_sel", type = "F", ctrl=False, shift=True, alt=False, value = "PRESS")
+        kmi.properties.frameSelection = False
+        kmi.properties.isolateSelection = True
+
+        #Frame & Isolate
+        kmi = km.keymap_items.new("object.neltulz_smart_frame_sel", type = "F", ctrl=True, shift=True, alt=False, value = "PRESS")
+        kmi.properties.frameSelection = True
+        kmi.properties.isolateSelection = True
 
     #------------------------------ Object Mode ----------------------------------------------------------------------------
 
