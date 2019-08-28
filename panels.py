@@ -23,7 +23,7 @@ from bpy.types import (Panel,
 class OBJECT_PT_NeltulzSmartFrameSel(Panel):
 
     bl_idname = "object.neltulz_smart_frame_sel_panel"
-    bl_label = "Smart Frame Selection v1.0.3"
+    bl_label = "Smart Frame Selection v1.0.4"
     bl_category = "Smart Frame Sel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
