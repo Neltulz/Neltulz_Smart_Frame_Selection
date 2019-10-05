@@ -23,7 +23,7 @@ from bpy.types import (Panel,
 class OBJECT_PT_NeltulzSmartFrameSel(Panel):
 
     bl_idname = "object.neltulz_smart_frame_sel_panel"
-    bl_label = "Smart Frame Selection v1.0.4"
+    bl_label = "Smart Frame Selection v1.0.5"
     bl_category = "Smart Frame Sel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -95,3 +95,32 @@ class OBJECT_PT_NeltulzSmartFrameSel(Panel):
         op = col.operator('object.neltulz_smart_frame_sel', text="Frame & Isolate")
         op.frameSelection=True
         op.isolateSelection=True
+
+
+        excludedObjectsSection = layout.row(align=True)
+        excludedObjectsSectionCol = excludedObjectsSection.column(align=True)
+
+        boxExcludedIsolate = excludedObjectsSectionCol.box()
+        boxExcludedIsolate.label(text="Excluded Objects from Isolate:")
+
+        boxCol = boxExcludedIsolate.column(align=True)
+
+        if len(scene.neltulzSmartFrameSel.excludedIsolateObjects) > 0:
+
+            for item in scene.neltulzSmartFrameSel.excludedIsolateObjects:
+                row = boxCol.row(align=True)
+                row.label(text=item)
+
+        else: 
+            row = boxCol.row(align=True)
+            row.label(text="None")
+
+        excludedObjectsSectionCol = excludedObjectsSection.column(align=True)
+
+        #col = boxExcludedIsolate.column(align=True)
+        #row = col.row(align=True)
+        op = excludedObjectsSectionCol.operator('object.neltulz_add_object_to_excluded_isolate_objects', text="", icon="ADD")
+        op = excludedObjectsSectionCol.operator('object.neltulz_remove_object_from_excluded_isolate_objects', text="", icon="REMOVE")
+        op = excludedObjectsSectionCol.operator('object.neltulz_refresh_excluded_isolate_objects', text="", icon="FILE_REFRESH")
+        op = excludedObjectsSectionCol.operator('object.neltulz_clear_all_excluded_isolate_objects', text="", icon="TRASH")
+

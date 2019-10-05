@@ -3,7 +3,7 @@ bl_info = {
     "author" : "Neil V. Moore",
     "description" : 'More ways to "Frame Selection" when pressing the keyboard shortcut',
     "blender" : (2, 80, 0),
-    "version" : (1, 0, 4),
+    "version" : (1, 0, 5),
     "location" : "View3D",
     "warning" : "",
     "category" : "Generic",
@@ -19,6 +19,10 @@ import bpy
 
 from . properties import NeltulzSmartFrameSel_IgnitProperties
 from . main_ot import OBJECT_OT_NeltulzSmartFrameSel
+from . misc_ot import OBJECT_OT_NeltulzAddObjectToExcludedIsolateObjects
+from . misc_ot import OBJECT_OT_NeltulzRemoveObjectFromExcludedIsolateObjects
+from . misc_ot import OBJECT_OT_NeltulzRefreshExcludedIsolateObjects
+from . misc_ot import OBJECT_OT_NeltulzClearAllExcludedIsolateObjects
 from . addon_preferences import OBJECT_OT_NeltulzSmartFrameSel_Preferences
 from . panels import OBJECT_PT_NeltulzSmartFrameSel
 
@@ -34,6 +38,10 @@ PendingDeprecationWarning
 classes = (
     NeltulzSmartFrameSel_IgnitProperties,
     OBJECT_OT_NeltulzSmartFrameSel,
+    OBJECT_OT_NeltulzAddObjectToExcludedIsolateObjects,
+    OBJECT_OT_NeltulzRemoveObjectFromExcludedIsolateObjects,
+    OBJECT_OT_NeltulzRefreshExcludedIsolateObjects,
+    OBJECT_OT_NeltulzClearAllExcludedIsolateObjects,
     OBJECT_OT_NeltulzSmartFrameSel_Preferences,
     OBJECT_PT_NeltulzSmartFrameSel,
 )

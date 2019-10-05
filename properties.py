@@ -116,3 +116,5 @@ class NeltulzSmartFrameSel_IgnitProperties(bpy.types.PropertyGroup):
         description="Currently busy isolating (Default: False)",
         default = False
     )
+
+    excludedIsolateObjects = set()
