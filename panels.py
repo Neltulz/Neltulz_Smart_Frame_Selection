@@ -23,7 +23,7 @@ from bpy.types import (Panel,
 class OBJECT_PT_NeltulzSmartFrameSel(Panel):
 
     bl_idname = "object.neltulz_smart_frame_sel_panel"
-    bl_label = "Smart Frame Selection v1.0.5"
+    bl_label = "Smart Frame Selection v1.0.6"
     bl_category = "Smart Frame Sel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -97,19 +97,46 @@ class OBJECT_PT_NeltulzSmartFrameSel(Panel):
         op.isolateSelection=True
 
 
+        #BEGIN Excluded Objects from Isolate Section:
+
         excludedObjectsSection = layout.row(align=True)
         excludedObjectsSectionCol = excludedObjectsSection.column(align=True)
 
+        numExcludedFromIsolate = len(scene.neltulzSmartFrameSel.excludedIsolateObjects)
+
         boxExcludedIsolate = excludedObjectsSectionCol.box()
-        boxExcludedIsolate.label(text="Excluded Objects from Isolate:")
+        
+        objectText = "objects"
+        if numExcludedFromIsolate == 1:
+            objectText = "object"
+            
+        text="Excluded objects from isolate: " + str(numExcludedFromIsolate) + " " + objectText + "."
+        boxExcludedIsolate.label(text=text)
 
         boxCol = boxExcludedIsolate.column(align=True)
 
-        if len(scene.neltulzSmartFrameSel.excludedIsolateObjects) > 0:
+        
 
-            for item in scene.neltulzSmartFrameSel.excludedIsolateObjects:
+        if numExcludedFromIsolate > 0:
+
+            if not scene.neltulzSmartFrameSel.hideFullIsolateExclusionList:
                 row = boxCol.row(align=True)
-                row.label(text=item)
+                row.prop(context.scene.neltulzSmartFrameSel, "hideFullIsolateExclusionList", text="Show List", toggle=True)
+            else:
+                row = boxCol.row(align=True)
+                row.prop(context.scene.neltulzSmartFrameSel, "hideFullIsolateExclusionList", text="Hide List", toggle=True)
+
+                for item in scene.neltulzSmartFrameSel.excludedIsolateObjects:
+                    row = boxCol.row(align=True)
+
+                    op = row.operator('object.neltulz_remove_object_from_excluded_isolate_objects', text="", icon="X")
+                    op.objectToRemove = item
+
+                    row.label(text=item)
+
+
+                
+
 
         else: 
             row = boxCol.row(align=True)
@@ -117,10 +144,67 @@ class OBJECT_PT_NeltulzSmartFrameSel(Panel):
 
         excludedObjectsSectionCol = excludedObjectsSection.column(align=True)
 
-        #col = boxExcludedIsolate.column(align=True)
-        #row = col.row(align=True)
         op = excludedObjectsSectionCol.operator('object.neltulz_add_object_to_excluded_isolate_objects', text="", icon="ADD")
         op = excludedObjectsSectionCol.operator('object.neltulz_remove_object_from_excluded_isolate_objects', text="", icon="REMOVE")
         op = excludedObjectsSectionCol.operator('object.neltulz_refresh_excluded_isolate_objects', text="", icon="FILE_REFRESH")
         op = excludedObjectsSectionCol.operator('object.neltulz_clear_all_excluded_isolate_objects', text="", icon="TRASH")
 
+        #END Excluded Objects from Isolate Section
+
+
+
+
+
+        #BEGIN Templated Objects Section:
+
+        templatedObjectsSection = layout.row(align=True)
+        templatedObjectsSectionCol = templatedObjectsSection.column(align=True)
+
+        numTemplatedObjects = len(scene.neltulzSmartFrameSel.templatedObjects)
+
+        boxTemplatedObjects = templatedObjectsSectionCol.box()
+        
+        objectText = "objects"
+        if numTemplatedObjects == 1:
+            objectText = "object"
+            
+        text="Templated objects: " + str(numTemplatedObjects) + " " + objectText + "."
+        boxTemplatedObjects.label(text=text)
+
+        boxCol = boxTemplatedObjects.column(align=True)
+
+        
+
+        if numTemplatedObjects > 0:
+
+            if not scene.neltulzSmartFrameSel.hideFullTemplateList:
+                row = boxCol.row(align=True)
+                row.prop(context.scene.neltulzSmartFrameSel, "hideFullTemplateList", text="Show List", toggle=True)
+            else:
+                row = boxCol.row(align=True)
+                row.prop(context.scene.neltulzSmartFrameSel, "hideFullTemplateList", text="Hide List", toggle=True)
+
+                for item in scene.neltulzSmartFrameSel.templatedObjects:
+                    row = boxCol.row(align=True)
+
+                    op = row.operator('object.neltulz_smart_frame_sel_remove_templated_objects', text="", icon="X")
+                    op.objectToRemove = item
+
+                    row.label(text=item)
+                    
+
+
+                
+
+
+        else: 
+            row = boxCol.row(align=True)
+            row.label(text="None")
+
+        templatedObjectsSectionCol = templatedObjectsSection.column(align=True)
+
+        op = templatedObjectsSectionCol.operator('object.neltulz_smart_frame_sel_template', text="", icon="ADD")
+        op = templatedObjectsSectionCol.operator('object.neltulz_smart_frame_sel_refresh_template_objects', text="", icon="FILE_REFRESH")
+        op = templatedObjectsSectionCol.operator('object.neltulz_smart_frame_sel_clear_all_templated_objects', text="", icon="TRASH")
+
+        #END Templated Objects Section

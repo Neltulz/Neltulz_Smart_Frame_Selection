@@ -117,4 +117,17 @@ class NeltulzSmartFrameSel_IgnitProperties(bpy.types.PropertyGroup):
         default = False
     )
 
+    hideFullIsolateExclusionList : BoolProperty(
+        name="Hide All",
+        description="Hide the entire list of excluded objects from isolate",
+        default = True
+    )
+
+    hideFullTemplateList : BoolProperty(
+        name="Hide All",
+        description="Hide the entire list of templated objects",
+        default = True
+    )
+
     excludedIsolateObjects = set()
+    templatedObjects = set()
