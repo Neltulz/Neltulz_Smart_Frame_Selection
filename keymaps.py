@@ -45,6 +45,16 @@ def neltulz_smart_frame_sel_register_keymaps(addon_keymaps):
     #add list of keymaps
     addon_keymaps.append(km)
 
+    #------------------------------ Curve Mode ----------------------------------------------------------------------------
+
+    #create new keymap
+    km = wm.keyconfigs.addon.keymaps.new(name="Curve", space_type="EMPTY")
+
+    createSmartFrameSelKeymap()
+
+    #add list of keymaps
+    addon_keymaps.append(km)
+
 
 
 def neltulz_smart_frame_sel_unregister_keymaps(addon_keymaps):

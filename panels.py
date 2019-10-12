@@ -23,7 +23,7 @@ from bpy.types import (Panel,
 class OBJECT_PT_NeltulzSmartFrameSel(Panel):
 
     bl_idname = "object.neltulz_smart_frame_sel_panel"
-    bl_label = "Smart Frame Selection v1.0.6"
+    bl_label = "Smart Frame Selection v1.0.7"
     bl_category = "Smart Frame Sel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -42,7 +42,6 @@ class OBJECT_PT_NeltulzSmartFrameSel(Panel):
         row = col.row(align=True)
 
         row.prop(context.scene.neltulzSmartFrameSel, "frameOnlyMesh", expand=True)
-
 
         col = layout.column(align=True)
         row = col.row(align=True)
@@ -71,8 +70,10 @@ class OBJECT_PT_NeltulzSmartFrameSel(Panel):
             col.prop(context.scene.neltulzSmartFrameSel, "frameCamera", expand=True)
             col.prop(context.scene.neltulzSmartFrameSel, "frameSpeaker", expand=True)
 
+
         col = layout.column(align=True)
         row = col.row(align=True)
+        row.prop(context.scene.neltulzSmartFrameSel, "hideFloorOnIsolate", expand=True)
         
         col = layout.column(align=True)
 
@@ -208,3 +209,18 @@ class OBJECT_PT_NeltulzSmartFrameSel(Panel):
         op = templatedObjectsSectionCol.operator('object.neltulz_smart_frame_sel_clear_all_templated_objects', text="", icon="TRASH")
 
         #END Templated Objects Section
+
+
+
+
+        #BEGIN Advanced Settings Section
+        col = layout.column(align=True)
+        col.prop(context.scene.neltulzSmartFrameSel, "useAdvancedSettings", toggle=False)
+
+        if scene.neltulzSmartFrameSel.useAdvancedSettings:
+            AdvancedOptionsSection = layout.row(align=True)
+            boxExcludedIsolate = AdvancedOptionsSection.box()
+            
+            boxExcludedIsolate.prop(context.scene.neltulzSmartFrameSel, "hideErrorMessages", toggle=False)
+
+        #END Advanced Settings Section

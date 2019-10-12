@@ -40,14 +40,27 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        #only permit the script to run when there are more than 0 objects in the scene.  Prevents error!
-        return len(bpy.context.scene.objects) > 0
+        return True
 
     def execute(self, context):
 
         scene = context.scene
 
+        showErrorMessages = True #declare
+        if scene.neltulzSmartFrameSel.useAdvancedSettings:
+            if scene.neltulzSmartFrameSel.hideErrorMessages:
+                showErrorMessages = False
+
+        
         obj_sel = bpy.context.selected_objects
+        active_obj = bpy.context.view_layer.objects.active
+        
+        #if there are no "yellow" selected objects, force the first selected object to become the active object
+        if not active_obj in obj_sel:
+            if len(obj_sel) > 0: #required to prevent error when no objects are selected in the scene
+                context.view_layer.objects.active = obj_sel[0]
+                active_obj = obj_sel[0]
+        
 
         visibilityCommandList = [
             "bpy.context.space_data.show_object_viewport_mesh",
@@ -82,6 +95,8 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
         ]
 
         previousVisibility = list()
+
+        
 
 
         #if nothing is selected...
@@ -125,67 +140,144 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                 if self.frameSelection:
                     bpy.ops.view3d.view_all(center=False)
 
-            
 
         #if there's something selected...
-        if len(obj_sel) > 0:
+        elif len(obj_sel) > 0:
 
             if bpy.context.object.mode == "EDIT":
 
-                totalNumVertsSel = 0
+                if active_obj.type == "MESH":
 
-                #get num of selected verts
-                for obj in obj_sel:
-                    selectedVerts = misc_functions.getSelectedVerts(self, context, obj)
-                    totalNumVertsSel += len( selectedVerts )
+                    totalNumVertsSel = 0 #declare
 
-                
-                if totalNumVertsSel > 0:
+                    #get num of selected verts
+                    for obj in obj_sel:
+                        selectedVerts = misc_functions.getSelectedVerts(self, context, obj)
+
+                        if selectedVerts is not None:
+                            totalNumVertsSel += len( selectedVerts )
+
                     
-                    if totalNumVertsSel == 1:
-                        #self.report({'INFO'}, 'edit mode: object selected: SINGLE vert selected' )
-                        if self.frameSelection:
-                            bpy.ops.view3d.view_selected(use_all_regions=False)
-
-                            # get view3d camera and zoom out! Note: This does not mess up the camera orbit.
-                            # source: https://blenderartists.org/t/how-to-access-the-view-3d-camera/601372/7
-                            # answer by user: system
-                            for area in bpy.context.screen.areas:
-                                if area.type == 'VIEW_3D':
-                                    rv3d = area.spaces[0].region_3d
-                                    if rv3d is not None:
-                                        rv3d.view_distance = 0.5
+                    if totalNumVertsSel > 0:
                         
+                        if totalNumVertsSel == 1:
+                            #self.report({'INFO'}, 'edit mode: object selected: SINGLE vert selected' )
+                            if self.frameSelection:
+                                bpy.ops.view3d.view_selected(use_all_regions=False)
+
+                                # get view3d camera and zoom out! Note: This does not mess up the camera orbit.
+                                # source: https://blenderartists.org/t/how-to-access-the-view-3d-camera/601372/7
+                                # answer by user: system
+                                for area in bpy.context.screen.areas:
+                                    if area.type == 'VIEW_3D':
+                                        rv3d = area.spaces[0].region_3d
+                                        if rv3d is not None:
+                                            rv3d.view_distance = 0.5
+                            
+                        else:
+                            #self.report({'INFO'}, 'edit mode: object selected: multiple verts selected' )
+                            if self.frameSelection:
+                                bpy.ops.view3d.view_selected(use_all_regions=False)
+
+                        
+
                     else:
-                        #self.report({'INFO'}, 'edit mode: object selected: multiple verts selected' )
+                        #no verts selected
+                        if self.frameSelection:
+
+                            bpy.ops.object.mode_set(mode = 'OBJECT')
+
+                            bpy.ops.view3d.view_selected(use_all_regions=False)
+
+                            bpy.ops.object.mode_set(mode = 'EDIT')
+                    
+                    
+                    if self.isolateSelection:
+                        if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
+                            misc_functions.unhidePreviouslyHidden_VertsEdgesFaces(self, context, scene)
+                            misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
+
+                        else:
+                            if totalNumVertsSel > 0:
+                                misc_functions.hideSelected_VertsEdgesFaces(self, context, scene)
+                                misc_functions.hideUnselected_Objs(self, context, scene, obj_sel, active_obj)
+
+                elif active_obj.type == "CURVE":
+
+                    totalNumCurvePointsSel = 0 #declare
+                    totalNumCurveHandlesLeft = 0 #declare
+                    totalNumCurveHandlesRight = 0 #declare
+                    totalNumCurvePointsAndHandles = 0 #declare
+
+                    #get num of selected curve points & handles
+                    for obj in obj_sel:
+                        selectedCurvePointsAndHandles = misc_functions.getSelectedCurvePointsAndHandles(self, context, obj)
+
+                        if selectedCurvePointsAndHandles is not None:
+                            totalNumCurvePointsSel += len( selectedCurvePointsAndHandles[0] )
+                            totalNumCurveHandlesLeft += len( selectedCurvePointsAndHandles[1] )
+                            totalNumCurveHandlesRight += len( selectedCurvePointsAndHandles[2] )
+                            totalNumCurvePointsAndHandles = totalNumCurvePointsSel + totalNumCurveHandlesLeft + totalNumCurveHandlesRight
+
+                    #print( "Total Selected Curve Points: " + str(totalNumCurvePointsSel) )
+                    #print( "Total Selected Curve Handles (LEFT): " + str(totalNumCurveHandlesLeft) )
+                    #print( "Total Selected Curve Handles (RIGHT): " + str(totalNumCurveHandlesRight) )
+                    #print( "Total Selected Curve Points & Handles: " + str(totalNumCurvePointsAndHandles) )
+
+                    if totalNumCurvePointsAndHandles > 0:
+
                         if self.frameSelection:
                             bpy.ops.view3d.view_selected(use_all_regions=False)
 
-                    
+                        if self.isolateSelection:
+                            if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
+                                misc_functions.unhidePreviouslyHidden_CurvePointsAndHandles(self, context, scene)
+                                misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
+
+                            else:
+                                misc_functions.hideSelected_CurvePointsAndHandles(self, context, scene)
+                                misc_functions.hideUnselected_Objs(self, context, scene, obj_sel, active_obj)
+
+                    else:
+
+                        #no curve points and handles selected
+                        if self.frameSelection:
+
+                            bpy.ops.object.mode_set(mode = 'OBJECT')
+
+                            bpy.ops.view3d.view_selected(use_all_regions=False)
+
+                            bpy.ops.object.mode_set(mode = 'EDIT')
 
                 else:
-                    #self.report({'INFO'}, 'edit mode: object selected: NO verts selected' )
-                    if self.frameSelection:
-                        bpy.ops.mesh.select_all(action='SELECT')
+                    if showErrorMessages:
+                        errorPartOne = 'Neltulz Smart Frame Selection:\n\n"'
+                        errorPartTwo = '" is currently unsupported on "' + str(active_obj.type) + '" object type while in "EDIT" mode\n\nSorry about that! I hope to have this implemented sometime in the future!\n\nIf this is a super important feature you need, please pester Neil at neilvmoore@gmail.com\n\nOr visit: https://blenderartists.org/t/neltulz-smart-frame-selection to submit a feature request!\n\nThanks!\n\n'
+                        error_supported_object_type_list = 'Current Supported Object Types: "MESH", "CURVE"'
+                        unsupported_object_type_error = False
+                        unsupported_object_type_error_operator = []
 
-                        bpy.ops.view3d.view_selected(use_all_regions=False)
-                        #bpy.ops.view3d.view_all(center=False)
+                        if self.frameSelection:
+                            unsupported_object_type_error = True
+                            unsupported_object_type_error_operator.append("Frame")
+                            
+                        
+                        if self.isolateSelection:
+                            unsupported_object_type_error = True
+                            unsupported_object_type_error_operator.append("Isolate")
 
-                        bpy.ops.mesh.select_all(action='DESELECT')
-                
-                
-                if self.isolateSelection:
-                    if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
-                        misc_functions.unhidePreviouslyHidden_VertsEdgesFaces(self, context, scene)
-                        misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
+                        if unsupported_object_type_error:
+                            
+                            operator_used = ""
+                            if len(unsupported_object_type_error_operator) == 1:
+                                operator_used = unsupported_object_type_error_operator[0]
+                            else:
+                                operator_used = unsupported_object_type_error_operator[0] + " & " + unsupported_object_type_error_operator[1]
 
-                    else:
-                        if totalNumVertsSel > 0:
-                            misc_functions.hideSelected_VertsEdgesFaces(self, context, scene)
-                            misc_functions.hideUnselected_Objs(self, context, scene, obj_sel)
+                            self.report({'ERROR'}, errorPartOne + operator_used + errorPartTwo + error_supported_object_type_list )
 
             
-            if bpy.context.object.mode == "OBJECT":
+            elif bpy.context.object.mode == "OBJECT":
 
                 #frame selection
                 if self.frameSelection:
@@ -203,7 +295,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                         misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
                     else:
-                        misc_functions.hideUnselected_Objs(self, context, scene, obj_sel)
+                        misc_functions.hideUnselected_Objs(self, context, scene, obj_sel, active_obj)
 
 
 

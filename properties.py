@@ -15,13 +15,10 @@ from bpy.types import (Panel,
                        PropertyGroup,
                        )
 
-
-
-
 class NeltulzSmartFrameSel_IgnitProperties(bpy.types.PropertyGroup):
 
-    advancedSettings : BoolProperty(
-        name="Checkbox Name",
+    useAdvancedSettings : BoolProperty(
+        name="Use Advanced Settings",
         description="Use advanced settings (Default: False)",
         default = False
         #update=neltulzSubD_useAdvancedSettings_toggled
@@ -128,6 +125,27 @@ class NeltulzSmartFrameSel_IgnitProperties(bpy.types.PropertyGroup):
         description="Hide the entire list of templated objects",
         default = True
     )
+
+
+    floorWasPreviouslyVisible : BoolProperty(
+        name="Previous Floor Visibility",
+        description="Floor was visible before user entered isolate mode (Default: False)",
+        default = False
+    )
+
+    hideFloorOnIsolate : BoolProperty(
+        name="Hide Floor on Isolate",
+        description="Hides the floor when you isolate an object. (Default: True)",
+        default = True
+    )
+
+    hideErrorMessages : BoolProperty(
+        name="Hide Error Messages",
+        description="Hide Error Messages (Default: False)",
+        default = False
+    )
+
+
 
     excludedIsolateObjects = set()
     templatedObjects = set()
