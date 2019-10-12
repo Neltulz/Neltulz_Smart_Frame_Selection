@@ -24,86 +24,92 @@ class NeltulzSmartFrameSel_IgnitProperties(bpy.types.PropertyGroup):
         #update=neltulzSubD_useAdvancedSettings_toggled
     )
 
-    frameOnlyMesh : BoolProperty(
-        name="Frame Only Mesh Objects",
-        description="Frame only mesh objects when nothing in the scene is selected (Default: True)",
+    use_all_regions_when_framing : BoolProperty(
+        name="Use all Regions when Framing",
+        description="When framing an object, all regions will frame the object.  This is useful if you use Quad view. (Default: True)",
         default = True
     )
 
+    showFrameList : BoolProperty(
+        name="Show Frame List",
+        description="Show Full list of object types that will be framed when nothing is selected (Default: False)",
+        default = False
+    )
+
     frameMesh : BoolProperty(
-        name="Frame Mesh",
+        name="Mesh",
         description="Frame Mesh (Default: True)",
         default = True
     )
 
     frameCurve : BoolProperty(
-        name="Frame Curve",
+        name="Curve",
         description="Frame Curve (Default: True)",
         default = True
     )
 
     frameSurface : BoolProperty(
-        name="Frame Surface",
+        name="Surface",
         description="Frame Surface (Default: True)",
         default = True
     )
 
     frameMeta : BoolProperty(
-        name="Frame Meta",
+        name="Meta",
         description="Frame Meta (Default: True)",
         default = True
     )
 
     frameText : BoolProperty(
-        name="Frame Text",
+        name="Text",
         description="Frame Text (Default: True)",
         default = True
     )
 
     frameGreasePen : BoolProperty(
-        name="Frame GreasePen",
+        name="GreasePen",
         description="Frame GreasePen (Default: True)",
         default = True
     )
 
     frameArmature : BoolProperty(
-        name="Frame Armature",
+        name="Armature",
         description="Frame Armature (Default: True)",
         default = True
     )
 
     frameLattice : BoolProperty(
-        name="Frame Lattice",
+        name="Lattice",
         description="Frame Lattice (Default: True)",
         default = True
     )
 
     frameEmpty : BoolProperty(
-        name="Frame Empty",
+        name="Empty",
         description="Frame Empty (Default: True)",
         default = True
     )
 
     frameLight : BoolProperty(
-        name="Frame Light",
+        name="Light",
         description="Frame Light (Default: True)",
         default = True
     )
 
     frameLightProbe : BoolProperty(
-        name="Frame LightProbe",
+        name="LightProbe",
         description="Frame LightProbe (Default: True)",
         default = True
     )
 
     frameCamera : BoolProperty(
-        name="Frame Camera",
+        name="Camera",
         description="Frame Camera (Default: True)",
         default = True
     )
 
     frameSpeaker : BoolProperty(
-        name="Frame Speaker",
+        name="Speaker",
         description="Frame Speaker (Default: True)",
         default = True
     )

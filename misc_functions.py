@@ -215,3 +215,24 @@ def hideSelected_CurvePointsAndHandles(self, context, scene):
 def unhidePreviouslyHidden_CurvePointsAndHandles(self, context, scene):
     bpy.ops.curve.reveal()
     scene.neltulzSmartFrameSel.currentlyBusyIsolating = False
+
+
+'''
+def showUnsupportedObjectTypeError(self, context, active_obj, showErrorMessages):
+    if showErrorMessages:
+        errorPartOne = 'Neltulz Smart Frame Selection: "'
+        errorPartTwo = '" is currently unsupported on "' + str(active_obj.type) + '" object type while in "' + bpy.context.object.mode + '" mode'
+        unsupported_object_type_error = False
+        unsupported_object_type_error_operator = ""
+
+        if self.frameSelection:
+            bpy.ops.view3d.view_selected(use_all_regions=scene.neltulzSmartFrameSel.use_all_regions_when_framing)
+            
+        
+        if self.isolateSelection:
+            unsupported_object_type_error = True
+            unsupported_object_type_error_operator = "Isolate"
+
+        if unsupported_object_type_error:
+            self.report({'WARNING'}, errorPartOne + unsupported_object_type_error_operator + errorPartTwo )
+'''

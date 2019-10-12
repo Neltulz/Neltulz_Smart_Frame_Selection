@@ -3,7 +3,7 @@ bl_info = {
     "author" : "Neil V. Moore",
     "description" : 'More ways to "Frame Selection" when pressing the keyboard shortcut',
     "blender" : (2, 80, 0),
-    "version" : (1, 0, 7),
+    "version" : (1, 0, 8),
     "location" : "View3D",
     "warning" : "",
     "category" : "Generic",
@@ -27,6 +27,7 @@ from . misc_ot import OBJECT_OT_NeltulzTemplate
 from . misc_ot import OBJECT_OT_NeltulzRefreshTemplateObjects
 from . misc_ot import OBJECT_OT_NeltulzRemoveTemplatedObject
 from . misc_ot import OBJECT_OT_NeltulzClearAllTemplatedObjects
+from . misc_ot import OBJECT_OT_NeltulzSmartFrameSelViewportToOrigin
 from . addon_preferences import OBJECT_OT_NeltulzSmartFrameSel_Preferences
 from . panels import OBJECT_PT_NeltulzSmartFrameSel
 
@@ -50,6 +51,7 @@ classes = (
     OBJECT_OT_NeltulzRefreshTemplateObjects,
     OBJECT_OT_NeltulzRemoveTemplatedObject,
     OBJECT_OT_NeltulzClearAllTemplatedObjects,
+    OBJECT_OT_NeltulzSmartFrameSelViewportToOrigin,
     OBJECT_OT_NeltulzSmartFrameSel_Preferences,
     OBJECT_PT_NeltulzSmartFrameSel,
 )

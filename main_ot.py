@@ -25,6 +25,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
     bl_idname = "object.neltulz_smart_frame_sel"
     bl_label = "Neltulz - Smart Frame Selection"
     bl_description = 'More ways to "Frame Selection" when pressing the keyboard shortcut'
+    bl_options = {'REGISTER'}
 
     frameSelection : BoolProperty(
         name="Frame Selection",
@@ -44,6 +45,8 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
     def execute(self, context):
 
+        
+
         scene = context.scene
 
         showErrorMessages = True #declare
@@ -51,7 +54,10 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
             if scene.neltulzSmartFrameSel.hideErrorMessages:
                 showErrorMessages = False
 
-        
+        #use all regions when framing? (Useful for quad view)
+        bUseAllRegions = scene.neltulzSmartFrameSel.use_all_regions_when_framing
+
+        objectMode = "Unknown"
         obj_sel = bpy.context.selected_objects
         active_obj = bpy.context.view_layer.objects.active
         
@@ -61,6 +67,19 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                 context.view_layer.objects.active = obj_sel[0]
                 active_obj = obj_sel[0]
         
+        try:
+            print( "object mode: " + bpy.context.object.mode)
+            objectMode = bpy.context.object.mode
+        except:
+            for obj in bpy.data.objects:
+                active_obj = obj
+                break
+            print( "object mode: Unknown" )
+        
+        if active_obj is not None:
+            print( "active object type: " + active_obj.type)
+        else:
+            print( "active object type: Unknown")
 
         visibilityCommandList = [
             "bpy.context.space_data.show_object_viewport_mesh",
@@ -101,25 +120,12 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
         #if nothing is selected...
         if len(obj_sel) == 0:
+
+            if objectMode == "Unknown" and active_obj == None:
+                if len(bpy.context.scene.objects) <= 0:
+                    print('No objects found!')
+                    bpy.ops.object.neltulz_smart_frame_sel_viewport_to_origin()
             
-            # if "Frame Only Mesh Objects" is checked in the side panel, then loop through all the object visibility commands.
-            # store previous visibility, and hide visibility for all but Mesh Objects
-            if scene.neltulzSmartFrameSel.frameOnlyMesh:
-                for command in visibilityCommandList:
-
-                    if command is "bpy.context.space_data.show_object_viewport_mesh":
-                        previousVisibility += list( [ True ] )
-
-                    else:
-                        #store previousVisibility so that it can be returned to original setting later
-                        previousVisibility += list( [ eval(command) ] )
-
-                        #disable visibility
-                        commandToEval = command + " = False"
-                        eval(compile(commandToEval,'<string>','exec'))
-
-            # otherwise, the user wants more specific control over what's framed, so, loop through each object visibility command,
-            # store previous visibility, and hide all except the ones the user specifically checkmarked
             else:
                 for index, command in enumerate(visibilityCommandList):
                     #store previousVisibility so that it can be returned to original setting later
@@ -130,15 +136,15 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
 
 
-            #if user wants to isolate selection...
-            if self.isolateSelection:
-                if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
-                    misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
+                #if user wants to isolate selection...
+                if self.isolateSelection:
+                    if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
+                        misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
-            #user did not want to isolate selection, instead, frame select.
-            else:
-                if self.frameSelection:
-                    bpy.ops.view3d.view_all(center=False)
+                #user did not want to isolate selection, instead, frame select.
+                else:
+                    if self.frameSelection:
+                        bpy.ops.view3d.view_all(center=False)
 
 
         #if there's something selected...
@@ -163,7 +169,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                         if totalNumVertsSel == 1:
                             #self.report({'INFO'}, 'edit mode: object selected: SINGLE vert selected' )
                             if self.frameSelection:
-                                bpy.ops.view3d.view_selected(use_all_regions=False)
+                                bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
 
                                 # get view3d camera and zoom out! Note: This does not mess up the camera orbit.
                                 # source: https://blenderartists.org/t/how-to-access-the-view-3d-camera/601372/7
@@ -177,7 +183,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                         else:
                             #self.report({'INFO'}, 'edit mode: object selected: multiple verts selected' )
                             if self.frameSelection:
-                                bpy.ops.view3d.view_selected(use_all_regions=False)
+                                bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
 
                         
 
@@ -187,7 +193,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
                             bpy.ops.object.mode_set(mode = 'OBJECT')
 
-                            bpy.ops.view3d.view_selected(use_all_regions=False)
+                            bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
 
                             bpy.ops.object.mode_set(mode = 'EDIT')
                     
@@ -227,7 +233,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                     if totalNumCurvePointsAndHandles > 0:
 
                         if self.frameSelection:
-                            bpy.ops.view3d.view_selected(use_all_regions=False)
+                            bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
 
                         if self.isolateSelection:
                             if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
@@ -245,48 +251,86 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
                             bpy.ops.object.mode_set(mode = 'OBJECT')
 
-                            bpy.ops.view3d.view_selected(use_all_regions=False)
+                            bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
 
                             bpy.ops.object.mode_set(mode = 'EDIT')
 
+                elif active_obj.type == "SURFACE":
+                    if self.frameSelection:
+                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+
+                    if self.isolateSelection:
+                        if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
+                            misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
+
+                        else:
+                            misc_functions.hideUnselected_Objs(self, context, scene, obj_sel, active_obj)
+
+                elif active_obj.type == "META":
+                    if self.frameSelection:
+                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                    
+                    if self.isolateSelection:
+                        if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
+                            misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
+
+                        else:
+                            misc_functions.hideUnselected_Objs(self, context, scene, obj_sel, active_obj)
+                
+                elif active_obj.type == "FONT":
+                    if self.frameSelection:
+                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                    
+                    if self.isolateSelection:
+                        if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
+                            misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
+
+                        else:
+                            misc_functions.hideUnselected_Objs(self, context, scene, obj_sel, active_obj)
+
+                elif active_obj.type == "ARMATURE":
+                    if self.frameSelection:
+                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+
+                    if self.isolateSelection:
+                        if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
+                            misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
+
+                        else:
+                            misc_functions.hideUnselected_Objs(self, context, scene, obj_sel, active_obj)
+                
+                elif active_obj.type == "LATTICE":
+                    if self.frameSelection:
+                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+
+                    if self.isolateSelection:
+                        if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
+                            misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
+
+                        else:
+                            misc_functions.hideUnselected_Objs(self, context, scene, obj_sel, active_obj)
+
                 else:
-                    if showErrorMessages:
-                        errorPartOne = 'Neltulz Smart Frame Selection:\n\n"'
-                        errorPartTwo = '" is currently unsupported on "' + str(active_obj.type) + '" object type while in "EDIT" mode\n\nSorry about that! I hope to have this implemented sometime in the future!\n\nIf this is a super important feature you need, please pester Neil at neilvmoore@gmail.com\n\nOr visit: https://blenderartists.org/t/neltulz-smart-frame-selection to submit a feature request!\n\nThanks!\n\n'
-                        error_supported_object_type_list = 'Current Supported Object Types: "MESH", "CURVE"'
-                        unsupported_object_type_error = False
-                        unsupported_object_type_error_operator = []
+                    if self.frameSelection:
+                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
 
-                        if self.frameSelection:
-                            unsupported_object_type_error = True
-                            unsupported_object_type_error_operator.append("Frame")
-                            
-                        
-                        if self.isolateSelection:
-                            unsupported_object_type_error = True
-                            unsupported_object_type_error_operator.append("Isolate")
+                    if self.isolateSelection:
+                        if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
+                            misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
-                        if unsupported_object_type_error:
-                            
-                            operator_used = ""
-                            if len(unsupported_object_type_error_operator) == 1:
-                                operator_used = unsupported_object_type_error_operator[0]
-                            else:
-                                operator_used = unsupported_object_type_error_operator[0] + " & " + unsupported_object_type_error_operator[1]
-
-                            self.report({'ERROR'}, errorPartOne + operator_used + errorPartTwo + error_supported_object_type_list )
-
-            
+                        else:
+                            misc_functions.hideUnselected_Objs(self, context, scene, obj_sel, active_obj)
+                    
             elif bpy.context.object.mode == "OBJECT":
 
                 #frame selection
                 if self.frameSelection:
                     if self.isolateSelection:
                         if not scene.neltulzSmartFrameSel.currentlyBusyIsolating:
-                            bpy.ops.view3d.view_selected(use_all_regions=False)
+                            bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
                     
                     else:
-                        bpy.ops.view3d.view_selected(use_all_regions=False)
+                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
                 
                 #isolate selection
                 if self.isolateSelection:
@@ -297,26 +341,62 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                     else:
                         misc_functions.hideUnselected_Objs(self, context, scene, obj_sel, active_obj)
 
+            elif bpy.context.object.mode == "EDIT_GPENCIL":
+                if active_obj.type == "GPENCIL":
+                    if self.frameSelection:
+                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
 
+                    if self.isolateSelection:
+                        if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
+                            misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
+                        else:
+                            misc_functions.hideUnselected_Objs(self, context, scene, obj_sel, active_obj)
 
+            elif bpy.context.object.mode == "PAINT_GPENCIL":
+                if active_obj.type == "GPENCIL":
+                    if self.frameSelection:
+                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+
+                    if self.isolateSelection:
+                        if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
+                            misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
+
+                        else:
+                            misc_functions.hideUnselected_Objs(self, context, scene, obj_sel, active_obj)
+
+            elif bpy.context.object.mode == "SCULPT_GPENCIL":
+                if active_obj.type == "GPENCIL":
+                    if self.frameSelection:
+                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+
+                    if self.isolateSelection:
+                        if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
+                            misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
+
+                        else:
+                            misc_functions.hideUnselected_Objs(self, context, scene, obj_sel, active_obj)
+
+                
+
+            elif bpy.context.object.mode == "POSE":
+                if active_obj.type == "ARMATURE":
+                    if self.frameSelection:
+                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+
+                    if self.isolateSelection:
+                        if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
+                            misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
+
+                        else:
+                            misc_functions.hideUnselected_Objs(self, context, scene, obj_sel, active_obj)
 
         #re-enable visibility for all objects
         if len(obj_sel) == 0:
-            if scene.neltulzSmartFrameSel.frameOnlyMesh:
-                for index, boool in enumerate(previousVisibility):
 
-                    if visibilityCommandList[index] is "bpy.context.space_data.show_object_viewport_mesh":
-                        pass
-
-                    else:
-                        commandToEval = visibilityCommandList[index] + " = " + str(boool)
-                        eval(compile(commandToEval,'<string>','exec'))
-            
-            else:
-                for index, boool in enumerate(previousVisibility):
-                    commandToEval = visibilityCommandList[index] + " = " + str(boool)
-                    eval(compile(commandToEval,'<string>','exec'))
+            for index, boool in enumerate(previousVisibility):
+                commandToEval = visibilityCommandList[index] + " = " + str(boool)
+                eval(compile(commandToEval,'<string>','exec'))
 
 
         return {'FINISHED'}
