@@ -116,8 +116,12 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
             if objectMode == "Unknown" and active_obj == None:
                 if len(bpy.context.scene.objects) <= 0:
-                    #No objects found!
-                    bpy.ops.object.neltulz_smart_frame_sel_viewport_to_origin()
+
+                    if self.frameSelection:
+                        #No objects found!
+                        bpy.ops.object.neltulz_smart_frame_sel_viewport_to_origin()
+
+                    
             
             else:
                 for index, command in enumerate(visibilityCommandList):
@@ -133,6 +137,9 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                 if self.isolateSelection:
                     if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
                         misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
+
+                    else:
+                        misc_functions.hideUnselected_Objs(self, context, scene,  obj_sel, active_obj)
 
                 #user did not want to isolate selection, instead, frame select.
                 else:
