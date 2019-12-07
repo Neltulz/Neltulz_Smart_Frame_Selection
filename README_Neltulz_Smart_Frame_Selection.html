@@ -10,11 +10,11 @@
         <meta name="twitter:card" value="summary">
 
         <!-- Open Graph data -->
-        <meta property="og:title" content="Neltulz - Smart Frame Selection v1.0.8" />
+        <meta property="og:title" content="Neltulz - Smart Frame Selection v1.0.9" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.logichaos.com/neltulz_blender_addons/neltulz_smart_frame_selection/README_Neltulz_Smart_Frame_Selection"/>
         <meta property="og:image" content="https://www.logichaos.com/neltulz_blender_addons/neltulz_smart_frame_selection/readme_html_files/img/logo.png" />
-        <meta property="og:description" content="Updated: 10/12/2019 - A blender addon that provides a quick way to frame selected objects, or frame all objects if nothing is selected." />
+        <meta property="og:description" content="Updated: 12/07/2019 - A blender addon that provides a quick way to frame selected objects, or frame all objects if nothing is selected." />
 
         <link href="readme_html_files/fontawesome-free-5.10.1-web/css/all.min.css" rel="stylesheet">
         <link rel="stylesheet" href="readme_html_files/css/bootstrap-reboot.min.css">
@@ -83,7 +83,7 @@
             </picture>
 
             <h1 class="pageTitle">
-                Neltulz - Smart Frame Selection<br><span class="versionNum">Version: 1.0.8<br>Updated: 10/12/2019</span>
+                Neltulz - Smart Frame Selection<br><span class="versionNum">Version: 1.0.9<br>Updated: 12/07/2019</span>
             </h1>
 
             <div class="versionAndDownloadBar">
@@ -295,6 +295,18 @@
             <h3 id="changelog">Changelog</h3>
 
                 <ul>
+                    <li>2019-12-07
+                        <ul>
+                            <li>Added ability to hide axes when isolating objects</li>
+                            <li>Added "Use Extreme Isolate". When enabled, hidden objects will be "truly" hidden, granting a huge performance increase when adding objects to the scene and adjusting their operator properties.<br><br>
+                                Use caution, this setting can cause the scene to take a very long time to refresh when unhiding all previously hidden objects, depending on scene complexity and total scene poly count.
+                            </li>
+                            <li>Improve compatibility with other addons when performing UNDO or REDO. (Added "UNDO" to the operator options</li>
+                            <li>Removed some console print messages.</li>
+                            <li>Removed some unnecessary code that apparently did nothing.</li>
+                            <li>Removed some code that was supposed to improve camera distance when framing only 1 vertice, but in many cases, was causing the camera to be too zoomed out.</li>
+                        </ul>
+                    </li>
                     <li>2019-10-12b
                         <ul>
                             <li>Added ability to move the viewport to the origin</li>

@@ -145,6 +145,36 @@ class NeltulzSmartFrameSel_IgnitProperties(bpy.types.PropertyGroup):
         default = True
     )
 
+    axis_x_wasPreviouslyVisible : BoolProperty(
+        name="Previous X Axis Visibility",
+        description="X Axis was visible before user entered isolate mode (Default: False)",
+        default = False
+    )
+
+    axis_y_wasPreviouslyVisible : BoolProperty(
+        name="Previous Y Axis Visibility",
+        description="Y Axis was visible before user entered isolate mode (Default: False)",
+        default = False
+    )
+
+    axis_z_wasPreviouslyVisible : BoolProperty(
+        name="Previous Z Axis Visibility",
+        description="Z Axis was visible before user entered isolate mode (Default: False)",
+        default = False
+    )
+
+    hideAxesOnIsolate : BoolProperty(
+        name="Hide Axes on Isolate",
+        description="Hides the axes when you isolate an object. (Default: True)",
+        default = True
+    )
+
+    useExtremeHideOnIsolate : BoolProperty(
+        name="Use Extreme Isolate (Use Caution)",
+        description='Sets "Show in Viewports" to "False" to grant a super performance increase.  Useful for adding objects to the scene and adjusting operator properties with minimal performance lag. (Default: False)',
+        default = False
+    )
+
     hideErrorMessages : BoolProperty(
         name="Hide Error Messages",
         description="Hide Error Messages (Default: False)",

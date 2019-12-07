@@ -25,7 +25,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
     bl_idname = "object.neltulz_smart_frame_sel"
     bl_label = "Neltulz - Smart Frame Selection"
     bl_description = 'More ways to "Frame Selection" when pressing the keyboard shortcut'
-    bl_options = {'REGISTER'}
+    bl_options = {'REGISTER', 'UNDO'}
 
     frameSelection : BoolProperty(
         name="Frame Selection",
@@ -44,8 +44,6 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
         return True
 
     def execute(self, context):
-
-        
 
         scene = context.scene
 
@@ -68,18 +66,13 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                 active_obj = obj_sel[0]
         
         try:
-            print( "object mode: " + bpy.context.object.mode)
+            #try to determine objectMode
             objectMode = bpy.context.object.mode
         except:
+            #Object Mode is unknown
             for obj in bpy.data.objects:
                 active_obj = obj
                 break
-            print( "object mode: Unknown" )
-        
-        if active_obj is not None:
-            print( "active object type: " + active_obj.type)
-        else:
-            print( "active object type: Unknown")
 
         visibilityCommandList = [
             "bpy.context.space_data.show_object_viewport_mesh",
@@ -123,7 +116,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
             if objectMode == "Unknown" and active_obj == None:
                 if len(bpy.context.scene.objects) <= 0:
-                    print('No objects found!')
+                    #No objects found!
                     bpy.ops.object.neltulz_smart_frame_sel_viewport_to_origin()
             
             else:
@@ -166,6 +159,11 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                     
                     if totalNumVertsSel > 0:
                         
+                        if self.frameSelection:
+                            bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+
+                        '''
+                        #OLD ZOOM CODE FOR WHEN ONLY 1 VERT IS SELECTED.  DISABLED UNTIL FURTHER NOTICE BECAUSE IT'S PROBLEMATIC FOR OBJECTS THAT ARE VERY SMALL OR VERY LARGE.
                         if totalNumVertsSel == 1:
                             #self.report({'INFO'}, 'edit mode: object selected: SINGLE vert selected' )
                             if self.frameSelection:
@@ -184,6 +182,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                             #self.report({'INFO'}, 'edit mode: object selected: multiple verts selected' )
                             if self.frameSelection:
                                 bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                        '''
 
                         
 
@@ -224,11 +223,6 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                             totalNumCurveHandlesLeft += len( selectedCurvePointsAndHandles[1] )
                             totalNumCurveHandlesRight += len( selectedCurvePointsAndHandles[2] )
                             totalNumCurvePointsAndHandles = totalNumCurvePointsSel + totalNumCurveHandlesLeft + totalNumCurveHandlesRight
-
-                    #print( "Total Selected Curve Points: " + str(totalNumCurvePointsSel) )
-                    #print( "Total Selected Curve Handles (LEFT): " + str(totalNumCurveHandlesLeft) )
-                    #print( "Total Selected Curve Handles (RIGHT): " + str(totalNumCurveHandlesRight) )
-                    #print( "Total Selected Curve Points & Handles: " + str(totalNumCurvePointsAndHandles) )
 
                     if totalNumCurvePointsAndHandles > 0:
 

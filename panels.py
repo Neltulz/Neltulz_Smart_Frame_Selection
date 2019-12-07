@@ -23,7 +23,7 @@ from bpy.types import (Panel,
 class OBJECT_PT_NeltulzSmartFrameSel(Panel):
 
     bl_idname = "object.neltulz_smart_frame_sel_panel"
-    bl_label = "Smart Frame Selection v1.0.8"
+    bl_label = "Smart Frame Selection v1.0.9"
     bl_category = "Smart Frame Sel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -222,8 +222,16 @@ class OBJECT_PT_NeltulzSmartFrameSel(Panel):
         row.prop(context.scene.neltulzSmartFrameSel, "use_all_regions_when_framing", expand=True)
 
         col = layout.column(align=True)
+        col.label(text="On Isolate, hide:")
+
         row = col.row(align=True)
-        row.prop(context.scene.neltulzSmartFrameSel, "hideFloorOnIsolate", expand=True)
+
+        row.prop(context.scene.neltulzSmartFrameSel, "hideFloorOnIsolate", expand=True, text="Floor", toggle=True, icon="MESH_GRID")
+
+        row.prop(context.scene.neltulzSmartFrameSel, "hideAxesOnIsolate", expand=True, text="Axes", toggle=True, icon="EMPTY_AXIS")
+
+        col = layout.column(align=True)
+        col.prop(context.scene.neltulzSmartFrameSel, "useExtremeHideOnIsolate", expand=True)
 
 
         '''

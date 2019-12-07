@@ -154,8 +154,15 @@ def hideUnselected_Objs(self, context, scene, obj_sel, active_obj):
                     pass
                 else:
                     obj['neltulzSmartFrameSel_hidden'] = 1
+
+                    #should object use extreme hidden to grant a big performance increase?
+                    if scene.neltulzSmartFrameSel.useExtremeHideOnIsolate:
+                        if obj.hide_viewport == False:
+                            obj.hide_viewport = True
+
                     foundObjectToHide = True
 
+        '''
         if bpy.context.object.mode == "EDIT":
             if obj is not active_obj:
                 if not obj.type == active_obj.type:
@@ -165,6 +172,7 @@ def hideUnselected_Objs(self, context, scene, obj_sel, active_obj):
                         else:
                             obj['neltulzSmartFrameSel_hidden'] = 1
                             foundObjectToHide = True
+        '''
             
             
     if foundObjectToHide:
@@ -173,8 +181,18 @@ def hideUnselected_Objs(self, context, scene, obj_sel, active_obj):
         #store current floor visibility for use later:
         scene.neltulzSmartFrameSel.floorWasPreviouslyVisible = bpy.context.space_data.overlay.show_floor
 
+        #store current axes visibility for use later:
+        scene.neltulzSmartFrameSel.axis_x_wasPreviouslyVisible = bpy.context.space_data.overlay.show_axis_x
+        scene.neltulzSmartFrameSel.axis_y_wasPreviouslyVisible = bpy.context.space_data.overlay.show_axis_y
+        scene.neltulzSmartFrameSel.axis_z_wasPreviouslyVisible = bpy.context.space_data.overlay.show_axis_z
+
         if scene.neltulzSmartFrameSel.hideFloorOnIsolate:
             bpy.context.space_data.overlay.show_floor = False
+
+        if scene.neltulzSmartFrameSel.hideAxesOnIsolate:
+            bpy.context.space_data.overlay.show_axis_x = False
+            bpy.context.space_data.overlay.show_axis_y = False
+            bpy.context.space_data.overlay.show_axis_z = False
 
         #hide all but selected
         for obj in bpy.context.scene.objects:
@@ -187,14 +205,33 @@ def hideUnselected_Objs(self, context, scene, obj_sel, active_obj):
 
 def unhidePreviouslyHidden_Objs(self, context, scene):
 
+    #restore floor visibility
     if scene.neltulzSmartFrameSel.floorWasPreviouslyVisible:
         bpy.context.space_data.overlay.show_floor = True
+
+    #restore axes visibility
+    if scene.neltulzSmartFrameSel.axis_x_wasPreviouslyVisible:
+        bpy.context.space_data.overlay.show_axis_x = True
+
+    if scene.neltulzSmartFrameSel.axis_y_wasPreviouslyVisible:
+        bpy.context.space_data.overlay.show_axis_y = True
+
+    if scene.neltulzSmartFrameSel.axis_z_wasPreviouslyVisible:
+        bpy.context.space_data.overlay.show_axis_z = True
+
+    
 
     #loop through all objects in scene check the custom prop
     for obj in bpy.context.scene.objects:
         if 'neltulzSmartFrameSel_hidden' in obj:
             if obj['neltulzSmartFrameSel_hidden'] == 1:
                 obj.hide_set(False) #unhide object
+
+                
+                #Ensure "Show in Viewports" is enabled
+                if obj.hide_viewport == True:
+                    obj.hide_viewport = False
+
                 del obj['neltulzSmartFrameSel_hidden']
 
     scene.neltulzSmartFrameSel.currentlyBusyIsolating = False

@@ -41,7 +41,7 @@ class OBJECT_OT_NeltulzAddObjectToExcludedIsolateObjects(bpy.types.Operator):
 
             obj['neltulzSmartFrameSel_isolateExcluded'] = 1
 
-        print('Added!')
+        #Object added to the "excludedIsolateObjects" list
 
         return {'FINISHED'}
     # END execute()
@@ -108,7 +108,7 @@ class OBJECT_OT_NeltulzRemoveObjectFromExcludedIsolateObjects(bpy.types.Operator
                         if key == 'neltulzSmartFrameSel_isolateExcluded':
                             del obj[key]
 
-        print('Removed!')
+        #removed custom property from object
 
         return {'FINISHED'}
     # END execute()
@@ -143,7 +143,7 @@ class OBJECT_OT_NeltulzRefreshExcludedIsolateObjects(bpy.types.Operator):
                         scene.neltulzSmartFrameSel.excludedIsolateObjects.add(obj.name)
 
         
-        print('Refreshed!')
+        #Refreshed
 
         return {'FINISHED'}
     # END execute()
@@ -180,7 +180,7 @@ class OBJECT_OT_NeltulzClearAllExcludedIsolateObjects(bpy.types.Operator):
 
 
         
-        print('Cleared!')
+        #Cleared
 
         return {'FINISHED'}
     # END execute()
@@ -221,13 +221,8 @@ class OBJECT_OT_NeltulzTemplate(bpy.types.Operator):
                 obj.display_type = 'WIRE'
                 obj.hide_select = True
                 obj['neltulzSmartFrameSel_template'] = 1
-                
-
-            
-
-            
-
-        print('Templated!')
+    
+        #Templated
 
         return {'FINISHED'}
     # END execute()
@@ -264,7 +259,7 @@ class OBJECT_OT_NeltulzRefreshTemplateObjects(bpy.types.Operator):
                         scene.neltulzSmartFrameSel.templatedObjects.add(obj.name)
 
         
-        print('Refreshed Template Objects!')
+        #Refreshed Template Objects
 
         return {'FINISHED'}
     # END execute()
@@ -325,8 +320,7 @@ class OBJECT_OT_NeltulzRemoveTemplatedObject(bpy.types.Operator):
 
 
 
-            
-            print('Removed Template Object!')
+            #Removed Template Object!
 
         return {'FINISHED'}
     # END execute()
@@ -377,11 +371,7 @@ class OBJECT_OT_NeltulzClearAllTemplatedObjects(bpy.types.Operator):
                 obj.display_type = originalDisplay
                 obj.hide_select = False
                 
-
-
-
-        
-        print('Cleared Template Objects!')
+        #Cleared Template Objects
 
         return {'FINISHED'}
     # END execute()
@@ -417,7 +407,7 @@ class OBJECT_OT_NeltulzSmartFrameSelViewportToOrigin(bpy.types.Operator):
 
         bpy.ops.object.delete(use_global=False, confirm=False)
         
-        print('Viewport moved to Origin!')
+        #Viewport moved to Origin
 
         return {'FINISHED'}
     # END execute()
