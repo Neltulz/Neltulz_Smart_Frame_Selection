@@ -144,7 +144,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                 #user did not want to isolate selection, instead, frame select.
                 else:
                     if self.frameSelection:
-                        bpy.ops.view3d.view_all(center=False)
+                        bpy.ops.view3d.view_all('INVOKE_DEFAULT', center=False)
 
 
         #if there's something selected...
@@ -167,14 +167,14 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                     if totalNumVertsSel > 0:
                         
                         if self.frameSelection:
-                            bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                            bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
 
                         '''
                         #OLD ZOOM CODE FOR WHEN ONLY 1 VERT IS SELECTED.  DISABLED UNTIL FURTHER NOTICE BECAUSE IT'S PROBLEMATIC FOR OBJECTS THAT ARE VERY SMALL OR VERY LARGE.
                         if totalNumVertsSel == 1:
                             #self.report({'INFO'}, 'edit mode: object selected: SINGLE vert selected' )
                             if self.frameSelection:
-                                bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                                bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
 
                                 # get view3d camera and zoom out! Note: This does not mess up the camera orbit.
                                 # source: https://blenderartists.org/t/how-to-access-the-view-3d-camera/601372/7
@@ -188,7 +188,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                         else:
                             #self.report({'INFO'}, 'edit mode: object selected: multiple verts selected' )
                             if self.frameSelection:
-                                bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                                bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
                         '''
 
                         
@@ -199,7 +199,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
                             bpy.ops.object.mode_set(mode = 'OBJECT')
 
-                            bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                            bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
 
                             bpy.ops.object.mode_set(mode = 'EDIT')
                     
@@ -234,7 +234,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                     if totalNumCurvePointsAndHandles > 0:
 
                         if self.frameSelection:
-                            bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                            bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
 
                         if self.isolateSelection:
                             if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
@@ -252,13 +252,13 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
                             bpy.ops.object.mode_set(mode = 'OBJECT')
 
-                            bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                            bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
 
                             bpy.ops.object.mode_set(mode = 'EDIT')
 
                 elif active_obj.type == "SURFACE":
                     if self.frameSelection:
-                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                        bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
 
                     if self.isolateSelection:
                         if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
@@ -269,7 +269,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
                 elif active_obj.type == "META":
                     if self.frameSelection:
-                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                        bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
                     
                     if self.isolateSelection:
                         if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
@@ -280,7 +280,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                 
                 elif active_obj.type == "FONT":
                     if self.frameSelection:
-                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                        bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
                     
                     if self.isolateSelection:
                         if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
@@ -291,7 +291,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
                 elif active_obj.type == "ARMATURE":
                     if self.frameSelection:
-                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                        bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
 
                     if self.isolateSelection:
                         if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
@@ -302,7 +302,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                 
                 elif active_obj.type == "LATTICE":
                     if self.frameSelection:
-                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                        bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
 
                     if self.isolateSelection:
                         if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
@@ -313,7 +313,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
                 else:
                     if self.frameSelection:
-                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                        bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
 
                     if self.isolateSelection:
                         if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
@@ -328,10 +328,10 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                 if self.frameSelection:
                     if self.isolateSelection:
                         if not scene.neltulzSmartFrameSel.currentlyBusyIsolating:
-                            bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                            bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
                     
                     else:
-                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                        bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
                 
                 #isolate selection
                 if self.isolateSelection:
@@ -345,7 +345,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
             elif bpy.context.object.mode == "EDIT_GPENCIL":
                 if active_obj.type == "GPENCIL":
                     if self.frameSelection:
-                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                        bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
 
                     if self.isolateSelection:
                         if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
@@ -357,7 +357,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
             elif bpy.context.object.mode == "PAINT_GPENCIL":
                 if active_obj.type == "GPENCIL":
                     if self.frameSelection:
-                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                        bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
 
                     if self.isolateSelection:
                         if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
@@ -369,7 +369,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
             elif bpy.context.object.mode == "SCULPT_GPENCIL":
                 if active_obj.type == "GPENCIL":
                     if self.frameSelection:
-                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                        bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
 
                     if self.isolateSelection:
                         if scene.neltulzSmartFrameSel.currentlyBusyIsolating:
@@ -383,7 +383,7 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
             elif bpy.context.object.mode == "POSE":
                 if active_obj.type == "ARMATURE":
                     if self.frameSelection:
-                        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+                        bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
 
                     if self.isolateSelection:
                         if scene.neltulzSmartFrameSel.currentlyBusyIsolating:

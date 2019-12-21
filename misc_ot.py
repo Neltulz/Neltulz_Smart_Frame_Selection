@@ -403,7 +403,7 @@ class OBJECT_OT_NeltulzSmartFrameSelViewportToOrigin(bpy.types.Operator):
         
         bpy.ops.object.empty_add(type='PLAIN_AXES', radius=5, location=(0, 0, 0))
 
-        bpy.ops.view3d.view_selected(use_all_regions=bUseAllRegions)
+        bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
 
         bpy.ops.object.delete(use_global=False, confirm=False)
         
