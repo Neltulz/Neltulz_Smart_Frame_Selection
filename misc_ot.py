@@ -2,19 +2,8 @@ import bpy
 from . properties import NeltulzSmartFrameSel_IgnitProperties
 from . import misc_functions
 
-from bpy.props import (StringProperty,
-                       BoolProperty,
-                       IntProperty,
-                       FloatProperty,
-                       FloatVectorProperty,
-                       EnumProperty,
-                       PointerProperty,
-                       )
-from bpy.types import (Panel,
-                       Operator,
-                       AddonPreferences,
-                       PropertyGroup,
-                       )
+from bpy.props import (StringProperty, BoolProperty, IntProperty, FloatProperty, FloatVectorProperty, EnumProperty, PointerProperty)
+from bpy.types import (Panel, Operator, AddonPreferences, PropertyGroup)
 
 # -----------------------------------------------------------------------------
 #    Add Object to Excluded Isolate Objects
@@ -22,8 +11,8 @@ from bpy.types import (Panel,
 
 class OBJECT_OT_NeltulzAddObjectToExcludedIsolateObjects(bpy.types.Operator):
     """Tooltip"""
-    bl_idname = "object.neltulz_add_object_to_excluded_isolate_objects"
-    bl_label = "Neltulz - Add"
+    bl_idname = "ntz_smrt_frm.excludeobj"
+    bl_label = 'Neltulz - Smart Frame : Add obj to "Isolate Exclusion List"'
     bl_description = 'Add the object to the list of excluded isolated objects'
     bl_options = {'REGISTER'}
 
@@ -53,8 +42,8 @@ class OBJECT_OT_NeltulzAddObjectToExcludedIsolateObjects(bpy.types.Operator):
 
 class OBJECT_OT_NeltulzRemoveObjectFromExcludedIsolateObjects(bpy.types.Operator):
     """Tooltip"""
-    bl_idname = "object.neltulz_remove_object_from_excluded_isolate_objects"
-    bl_label = "Neltulz - Remove"
+    bl_idname = "ntz_smrt_frm.unexcludeobj"
+    bl_label = 'Neltulz - Smart Frame : Remove obj from "Isolate Exclusion List"'
     bl_description = 'Remove the object from the excluded isolated objects'
     bl_options = {'REGISTER'}
 
@@ -120,8 +109,8 @@ class OBJECT_OT_NeltulzRemoveObjectFromExcludedIsolateObjects(bpy.types.Operator
 
 class OBJECT_OT_NeltulzRefreshExcludedIsolateObjects(bpy.types.Operator):
     """Tooltip"""
-    bl_idname = "object.neltulz_refresh_excluded_isolate_objects"
-    bl_label = "Neltulz - Refresh"
+    bl_idname = "ntz_smrt_frm.refreshexcludedobjlist"
+    bl_label = 'Neltulz - Smart Frame : Refresh "Isolate Exclusion List"'
     bl_description = 'Refresh the list of excluded isolated objects.  Useful if you have renamed objects and the list no longer matches'
     bl_options = {'REGISTER'}
 
@@ -156,8 +145,8 @@ class OBJECT_OT_NeltulzRefreshExcludedIsolateObjects(bpy.types.Operator):
 
 class OBJECT_OT_NeltulzClearAllExcludedIsolateObjects(bpy.types.Operator):
     """Tooltip"""
-    bl_idname = "object.neltulz_clear_all_excluded_isolate_objects"
-    bl_label = "Neltulz - Clear"
+    bl_idname = "ntz_smrt_frm.clearexcludedobjs"
+    bl_label = 'Neltulz - Smart Frame : Clear "Isolate Exclusion List"'
     bl_description = 'Clear the list of excluded isolated objects.'
     bl_options = {'REGISTER'}
 
@@ -192,8 +181,8 @@ class OBJECT_OT_NeltulzClearAllExcludedIsolateObjects(bpy.types.Operator):
 
 class OBJECT_OT_NeltulzTemplate(bpy.types.Operator):
     """Tooltip"""
-    bl_idname = "object.neltulz_smart_frame_sel_template"
-    bl_label = "Neltulz - Template"
+    bl_idname = "ntz_smrt_frm.convertobjtotemplate"
+    bl_label = 'Neltulz - Smart Frame : Add obj to "Templated Obj List"'
     bl_description = 'Converts object to wireframe with click-through'
     bl_options = {'REGISTER'}
 
@@ -236,8 +225,8 @@ class OBJECT_OT_NeltulzTemplate(bpy.types.Operator):
 
 class OBJECT_OT_NeltulzRefreshTemplateObjects(bpy.types.Operator):
     """Tooltip"""
-    bl_idname = "object.neltulz_smart_frame_sel_refresh_template_objects"
-    bl_label = "Neltulz - Refresh Template Objs"
+    bl_idname = "ntz_smrt_frm.refreshtemplatedobjlist"
+    bl_label = 'Neltulz - Smart Frame : Refresh "Templated Obj List"'
     bl_description = 'Refresh the list of templated objects'
     bl_options = {'REGISTER'}
 
@@ -272,8 +261,8 @@ class OBJECT_OT_NeltulzRefreshTemplateObjects(bpy.types.Operator):
 
 class OBJECT_OT_NeltulzRemoveTemplatedObject(bpy.types.Operator):
     """Tooltip"""
-    bl_idname = "object.neltulz_smart_frame_sel_remove_templated_objects"
-    bl_label = "Neltulz - Remove Templated Object"
+    bl_idname = "ntz_smrt_frm.removetemplatedobj"
+    bl_label = 'Neltulz - Smart Frame : Remove obj from "Templated Obj List"'
     bl_description = 'Remove the templated object'
     bl_options = {'REGISTER'}
 
@@ -334,8 +323,8 @@ class OBJECT_OT_NeltulzRemoveTemplatedObject(bpy.types.Operator):
 
 class OBJECT_OT_NeltulzClearAllTemplatedObjects(bpy.types.Operator):
     """Tooltip"""
-    bl_idname = "object.neltulz_smart_frame_sel_clear_all_templated_objects"
-    bl_label = "Neltulz - Clear Templated Objects"
+    bl_idname = "ntz_smrt_frm.clearalltemplatedobjs"
+    bl_label = 'Neltulz - Smart Frame : Clear "Templated Obj List"'
     bl_description = 'Clear the list of templated objects'
     bl_options = {'REGISTER'}
 
@@ -385,8 +374,8 @@ class OBJECT_OT_NeltulzClearAllTemplatedObjects(bpy.types.Operator):
 
 class OBJECT_OT_NeltulzSmartFrameSelViewportToOrigin(bpy.types.Operator):
     """Tooltip"""
-    bl_idname = "object.neltulz_smart_frame_sel_viewport_to_origin"
-    bl_label = "Neltulz - Viewport to Origin"
+    bl_idname = "ntz_smrt_frm.viewporttoorigin"
+    bl_label = 'Neltulz - Smart Frame : Viewport to Origin'
     bl_description = 'Moves the viewport to the origin'
     bl_options = {'REGISTER'}
 

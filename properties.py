@@ -1,21 +1,16 @@
 import bpy
 from . import misc_functions
 
-from bpy.props import (StringProperty,
-                       BoolProperty,
-                       IntProperty,
-                       FloatProperty,
-                       FloatVectorProperty,
-                       EnumProperty,
-                       PointerProperty,
-                       )
-from bpy.types import (Panel,
-                       Operator,
-                       AddonPreferences,
-                       PropertyGroup,
-                       )
+from bpy.props import (StringProperty, BoolProperty, IntProperty, FloatProperty, FloatVectorProperty, EnumProperty, PointerProperty)
+from bpy.types import (Panel, Operator, AddonPreferences, PropertyGroup)
 
 class NeltulzSmartFrameSel_IgnitProperties(bpy.types.PropertyGroup):
+
+    bShowOptions : BoolProperty (
+        name="Show Options",
+        description="Reveals options.",
+        default = False,
+    )
 
     useAdvancedSettings : BoolProperty(
         name="Use Advanced Settings",

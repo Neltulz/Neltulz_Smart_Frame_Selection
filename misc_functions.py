@@ -1,5 +1,4 @@
 import bpy
-        
 
 # -----------------------------------------------------------------------------
 #   Determine which mode is currently Selected (Vert, Edge, Face, etc)
@@ -19,7 +18,6 @@ def getCurrentSelectMode(self, context):
 
     currentSelectMode = int()
 
-    
     if tempTuple == (True, False, False):       
         currentSelectMode = 1
     elif tempTuple == (False, True, False):
@@ -31,7 +29,6 @@ def getCurrentSelectMode(self, context):
 
     return currentSelectMode
 # END getCurrentSelectMode(self, context)
-
 
 def getSelectedEdges(self, context, obj):
     if obj.type == "MESH":
@@ -162,37 +159,10 @@ def hideUnselected_Objs(self, context, scene, obj_sel, active_obj):
 
                     foundObjectToHide = True
 
-        '''
-        if bpy.context.object.mode == "EDIT":
-            if obj is not active_obj:
-                if not obj.type == active_obj.type:
-                    if obj.visible_get(): #ensure object is visible, that way later on, user preferred hidden objects don't get revealed accidentally
-                        if 'neltulzSmartFrameSel_isolateExcluded' in obj:
-                            pass
-                        else:
-                            obj['neltulzSmartFrameSel_hidden'] = 1
-                            foundObjectToHide = True
-        '''
-            
-            
     if foundObjectToHide:
         scene.neltulzSmartFrameSel.currentlyBusyIsolating = True
 
-        #store current floor visibility for use later:
-        scene.neltulzSmartFrameSel.floorWasPreviouslyVisible = bpy.context.space_data.overlay.show_floor
-
-        #store current axes visibility for use later:
-        scene.neltulzSmartFrameSel.axis_x_wasPreviouslyVisible = bpy.context.space_data.overlay.show_axis_x
-        scene.neltulzSmartFrameSel.axis_y_wasPreviouslyVisible = bpy.context.space_data.overlay.show_axis_y
-        scene.neltulzSmartFrameSel.axis_z_wasPreviouslyVisible = bpy.context.space_data.overlay.show_axis_z
-
-        if scene.neltulzSmartFrameSel.hideFloorOnIsolate:
-            bpy.context.space_data.overlay.show_floor = False
-
-        if scene.neltulzSmartFrameSel.hideAxesOnIsolate:
-            bpy.context.space_data.overlay.show_axis_x = False
-            bpy.context.space_data.overlay.show_axis_y = False
-            bpy.context.space_data.overlay.show_axis_z = False
+        hideFloorAndAxes(self, context, scene)
 
         #hide all but selected
         for obj in bpy.context.scene.objects:
@@ -201,7 +171,27 @@ def hideUnselected_Objs(self, context, scene, obj_sel, active_obj):
 
         foundObjectToHide = False #reset
 
-    
+    else:
+        scene.neltulzSmartFrameSel.currentlyBusyIsolating = True
+
+        hideFloorAndAxes(self, context, scene)
+
+def hideFloorAndAxes(self, context, scene):
+    #store current floor visibility for use later:
+    scene.neltulzSmartFrameSel.floorWasPreviouslyVisible = bpy.context.space_data.overlay.show_floor
+
+    #store current axes visibility for use later:
+    scene.neltulzSmartFrameSel.axis_x_wasPreviouslyVisible = bpy.context.space_data.overlay.show_axis_x
+    scene.neltulzSmartFrameSel.axis_y_wasPreviouslyVisible = bpy.context.space_data.overlay.show_axis_y
+    scene.neltulzSmartFrameSel.axis_z_wasPreviouslyVisible = bpy.context.space_data.overlay.show_axis_z
+
+    if scene.neltulzSmartFrameSel.hideFloorOnIsolate:
+        bpy.context.space_data.overlay.show_floor = False
+
+    if scene.neltulzSmartFrameSel.hideAxesOnIsolate:
+        bpy.context.space_data.overlay.show_axis_x = False
+        bpy.context.space_data.overlay.show_axis_y = False
+        bpy.context.space_data.overlay.show_axis_z = False
 
 def unhidePreviouslyHidden_Objs(self, context, scene):
 
@@ -218,8 +208,6 @@ def unhidePreviouslyHidden_Objs(self, context, scene):
 
     if scene.neltulzSmartFrameSel.axis_z_wasPreviouslyVisible:
         bpy.context.space_data.overlay.show_axis_z = True
-
-    
 
     #loop through all objects in scene check the custom prop
     for obj in bpy.context.scene.objects:
@@ -252,24 +240,3 @@ def hideSelected_CurvePointsAndHandles(self, context, scene):
 def unhidePreviouslyHidden_CurvePointsAndHandles(self, context, scene):
     bpy.ops.curve.reveal()
     scene.neltulzSmartFrameSel.currentlyBusyIsolating = False
-
-
-'''
-def showUnsupportedObjectTypeError(self, context, active_obj, showErrorMessages):
-    if showErrorMessages:
-        errorPartOne = 'Neltulz Smart Frame Selection: "'
-        errorPartTwo = '" is currently unsupported on "' + str(active_obj.type) + '" object type while in "' + bpy.context.object.mode + '" mode'
-        unsupported_object_type_error = False
-        unsupported_object_type_error_operator = ""
-
-        if self.frameSelection:
-            bpy.ops.view3d.view_selected(use_all_regions=scene.neltulzSmartFrameSel.use_all_regions_when_framing)
-            
-        
-        if self.isolateSelection:
-            unsupported_object_type_error = True
-            unsupported_object_type_error_operator = "Isolate"
-
-        if unsupported_object_type_error:
-            self.report({'WARNING'}, errorPartOne + unsupported_object_type_error_operator + errorPartTwo )
-'''

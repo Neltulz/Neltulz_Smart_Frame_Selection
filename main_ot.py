@@ -2,19 +2,8 @@ import bpy
 from . properties import NeltulzSmartFrameSel_IgnitProperties
 from . import misc_functions
 
-from bpy.props import (StringProperty,
-                       BoolProperty,
-                       IntProperty,
-                       FloatProperty,
-                       FloatVectorProperty,
-                       EnumProperty,
-                       PointerProperty,
-                       )
-from bpy.types import (Panel,
-                       Operator,
-                       AddonPreferences,
-                       PropertyGroup,
-                       )
+from bpy.props import (StringProperty, BoolProperty, IntProperty, FloatProperty, FloatVectorProperty, EnumProperty, PointerProperty)
+from bpy.types import (Panel, Operator, AddonPreferences, PropertyGroup)
 
 # -----------------------------------------------------------------------------
 #    Main Addon Operator
@@ -22,8 +11,8 @@ from bpy.types import (Panel,
 
 class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
     """Tooltip"""
-    bl_idname = "object.neltulz_smart_frame_sel"
-    bl_label = "Neltulz - Smart Frame Selection"
+    bl_idname = "ntz_smrt_frm.select"
+    bl_label = "Neltulz - Smart Frame"
     bl_description = 'More ways to "Frame Selection" when pressing the keyboard shortcut'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -108,9 +97,6 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
         previousVisibility = list()
 
-        
-
-
         #if nothing is selected...
         if len(obj_sel) == 0:
 
@@ -119,10 +105,8 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
 
                     if self.frameSelection:
                         #No objects found!
-                        bpy.ops.object.neltulz_smart_frame_sel_viewport_to_origin()
+                        bpy.ops.ntz_smrt_frm.viewporttoorigin()
 
-                    
-            
             else:
                 for index, command in enumerate(visibilityCommandList):
                     #store previousVisibility so that it can be returned to original setting later
@@ -146,7 +130,6 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                     if self.frameSelection:
                         bpy.ops.view3d.view_all('INVOKE_DEFAULT', center=False)
 
-
         #if there's something selected...
         elif len(obj_sel) > 0:
 
@@ -168,30 +151,6 @@ class OBJECT_OT_NeltulzSmartFrameSel(bpy.types.Operator):
                         
                         if self.frameSelection:
                             bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
-
-                        '''
-                        #OLD ZOOM CODE FOR WHEN ONLY 1 VERT IS SELECTED.  DISABLED UNTIL FURTHER NOTICE BECAUSE IT'S PROBLEMATIC FOR OBJECTS THAT ARE VERY SMALL OR VERY LARGE.
-                        if totalNumVertsSel == 1:
-                            #self.report({'INFO'}, 'edit mode: object selected: SINGLE vert selected' )
-                            if self.frameSelection:
-                                bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
-
-                                # get view3d camera and zoom out! Note: This does not mess up the camera orbit.
-                                # source: https://blenderartists.org/t/how-to-access-the-view-3d-camera/601372/7
-                                # answer by user: system
-                                for area in bpy.context.screen.areas:
-                                    if area.type == 'VIEW_3D':
-                                        rv3d = area.spaces[0].region_3d
-                                        if rv3d is not None:
-                                            rv3d.view_distance = 0.5
-                            
-                        else:
-                            #self.report({'INFO'}, 'edit mode: object selected: multiple verts selected' )
-                            if self.frameSelection:
-                                bpy.ops.view3d.view_selected('INVOKE_DEFAULT', use_all_regions=bUseAllRegions)
-                        '''
-
-                        
 
                     else:
                         #no verts selected

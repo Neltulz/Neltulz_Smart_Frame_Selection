@@ -4,17 +4,17 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Neltulz - Smart Frame Selection - ReadMe</title>
+        <title>Neltulz - Smart Frame - ReadMe</title>
 
         <!-- Twitter Card data -->
         <meta name="twitter:card" value="summary">
 
         <!-- Open Graph data -->
-        <meta property="og:title" content="Neltulz - Smart Frame Selection v1.0.11" />
+        <meta property="og:title" content="Neltulz - Smart Frame v1.0.12" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.logichaos.com/neltulz_blender_addons/neltulz_smart_frame_selection/README_Neltulz_Smart_Frame_Selection"/>
         <meta property="og:image" content="https://www.logichaos.com/neltulz_blender_addons/neltulz_smart_frame_selection/readme_html_files/img/logo.png" />
-        <meta property="og:description" content="Updated: 12/21/2019 - A blender addon that provides a quick way to frame selected objects, or frame all objects if nothing is selected." />
+        <meta property="og:description" content="Updated: 12/22/2019 - A blender addon that provides a quick way to frame selected objects, or frame all objects if nothing is selected." />
 
         <link href="readme_html_files/fontawesome-free-5.10.1-web/css/all.min.css" rel="stylesheet">
         <link rel="stylesheet" href="readme_html_files/css/bootstrap-reboot.min.css">
@@ -83,7 +83,7 @@
             </picture>
 
             <h1 class="pageTitle">
-                Neltulz - Smart Frame Selection<br><span class="versionNum">Version: 1.0.11<br>Updated: 12/21/2019</span>
+                Neltulz - Smart Frame<br><span class="versionNum">Version: 1.0.12<br>Updated: 12/22/2019</span>
             </h1>
 
             <div class="versionAndDownloadBar">
@@ -171,7 +171,7 @@
             <h3 id="installation">Installation</h3>
 
             <ol>
-                <li>Download the <span class="focusText">Neltulz - Smart Frame Selection</span> zip file anywhere on your
+                <li>Download the <span class="focusText">Neltulz - Smart Frame</span> zip file anywhere on your
                 computer.</li>
                 
                 <li>Run Blender.</li>
@@ -182,10 +182,10 @@
                 
                 <li>At the top right, click <span class="focusText">Install</span>.</li>
                 
-                <li>Browse for the <span class="focusText">Neltulz - Smart Frame Selection</span> zip file and click Install Add-on
+                <li>Browse for the <span class="focusText">Neltulz - Smart Frame</span> zip file and click Install Add-on
                 from File <br>Alternatively, you may double click the zip file to install it.</li>
                 
-                <li>Next to Generic: <span class="focusText">Neltulz - Smart Frame Selection</span>, enable the checkbox.</li>
+                <li>Next to Generic: <span class="focusText">Neltulz - Smart Frame</span>, enable the checkbox.</li>
                 
                 <li>At the lower left of the preferences window, click <span class="focusText">Save Preferences</span> and
                 close the preferences window.</li>
@@ -215,21 +215,21 @@
                         <tr>
                             <td class="hotkey primary">F</td>
                             <td class="result success">Frame</td>
-                            <td class="command">object.neltulz_smart_frame_sel</td>
+                            <td class="command">ntz_smrt_frm.select</td>
                             <td class="properties">frameSelection = True<br>isolateSelection = False</td>
                         </tr>
 
                         <tr>
                             <td class="hotkey primary">SHIFT+F</td>
                             <td class="result success">Isolate</td>
-                            <td class="command">object.neltulz_smart_frame_sel</td>
+                            <td class="command">ntz_smrt_frm.select</td>
                             <td class="properties">frameSelection = False<br>isolateSelection = True</td>
                         </tr>
 
                         <tr>
                             <td class="hotkey primary">CTRL+SHIFT+F</td>
                             <td class="result success">Frame & Isolate</td>
-                            <td class="command">object.neltulz_smart_frame_sel</td>
+                            <td class="command">ntz_smrt_frm.select</td>
                             <td class="properties">frameSelection = True<br>isolateSelection = True</td>
                         </tr>
 
@@ -295,6 +295,17 @@
             <h3 id="changelog">Changelog</h3>
 
                 <ul>
+                    <li>
+                        2019-12-22
+                        <ul>
+                            <li>Shortened add-on name from "Smart Frame Selection" to "Smart Frame"</li>
+                            <li>Set default sidebar tab name to "Neltulz" so that all Neltulz related sidebars from various Neltulz add-ons will be organized here.</li>
+                            <li>Changed operator bl_idnames to improve organization. This may break things if you've added operators to any custom pie menus.  Sorry for the inconvenience.</li>
+                            <li>Improved sidebar panel significantly.  Better use of space.</li>
+                            <li>Reduced the number of keymaps by switching over to "3D View Generic.  This should make it easier for users to customize keymaps</li>
+                            <li>Ability to isolate even when all objects in the scene are selected</li>
+                        </ul>
+                    </li>
                     <li>
                         2019-12-21
                         <ul>

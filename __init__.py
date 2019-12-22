@@ -1,9 +1,9 @@
 bl_info = {
-    "name" : "Neltulz - Smart Frame Selection",
+    "name" : "Neltulz - Smart Frame",
     "author" : "Neil V. Moore",
     "description" : 'More ways to "Frame Selection" when pressing the keyboard shortcut',
     "blender" : (2, 80, 0),
-    "version" : (1, 0, 11),
+    "version" : (1, 0, 12),
     "location" : "View3D",
     "warning" : "",
     "category" : "Generic",
@@ -34,7 +34,6 @@ from . panels import OBJECT_PT_NeltulzSmartFrameSel
 from . import keymaps
 
 PendingDeprecationWarning
-
 
 # -----------------------------------------------------------------------------
 #    Store classes in List so that they can be easily registered/unregistered    
@@ -76,9 +75,6 @@ def register():
     #add property group to the scene
     bpy.types.Scene.neltulzSmartFrameSel = bpy.props.PointerProperty(type=NeltulzSmartFrameSel_IgnitProperties)
 
-    
-
-
 def unregister():
     from bpy.utils import unregister_class
     for cls in reversed(classes):
@@ -87,10 +83,8 @@ def unregister():
     #remove keymaps
     keymaps.neltulz_smart_frame_sel_unregister_keymaps(addon_keymaps)
 
-
-
 if __name__ == "__main__":
     register()
 
     # test call
-    bpy.ops.object.neltulz_smart_frame_sel()
+    bpy.ops.ntz_smrt_frm.select()
