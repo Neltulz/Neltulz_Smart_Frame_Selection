@@ -1,5 +1,5 @@
 import bpy
-from . properties import NeltulzSmartFrameSel_IgnitProperties
+from . properties import NTZSMFRM_ignitproperties
 
 # -----------------------------------------------------------------------------
 #    Keymaps (For Register)

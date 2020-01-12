@@ -10,11 +10,11 @@
         <meta name="twitter:card" value="summary">
 
         <!-- Open Graph data -->
-        <meta property="og:title" content="Neltulz - Smart Frame v1.0.12" />
+        <meta property="og:title" content="Neltulz - Smart Frame v1.0.13" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.logichaos.com/neltulz_blender_addons/neltulz_smart_frame_selection/README_Neltulz_Smart_Frame_Selection"/>
         <meta property="og:image" content="https://www.logichaos.com/neltulz_blender_addons/neltulz_smart_frame_selection/readme_html_files/img/logo.png" />
-        <meta property="og:description" content="Updated: 12/22/2019 - A blender addon that provides a quick way to frame selected objects, or frame all objects if nothing is selected." />
+        <meta property="og:description" content="Updated: 1/12/2020 - A blender addon that provides a quick way to frame selected objects, or frame all objects if nothing is selected." />
 
         <link href="readme_html_files/fontawesome-free-5.10.1-web/css/all.min.css" rel="stylesheet">
         <link rel="stylesheet" href="readme_html_files/css/bootstrap-reboot.min.css">
@@ -39,8 +39,6 @@
                 });
             }
             
-            
-        
         </script>
 
         <aside id="sidebar">
@@ -83,7 +81,7 @@
             </picture>
 
             <h1 class="pageTitle">
-                Neltulz - Smart Frame<br><span class="versionNum">Version: 1.0.12<br>Updated: 12/22/2019</span>
+                Neltulz - Smart Frame<br><span class="versionNum">Version: 1.0.13<br>Updated: 1/12/2020</span>
             </h1>
 
             <div class="versionAndDownloadBar">
@@ -296,7 +294,18 @@
 
                 <ul>
                     <li>
-                        2019-12-22
+                        <h5>2020-01-12</h5>
+                        <ul>
+                            <li>Bug Fix: Could not frame object when there was no active object</li>
+                            <li>Bug Fix: Unable to move viewport to origin in many situations (Edit mode, unselected objects, no active objects etc)</li>
+                            <li>New Compact popup/pie panel and compact sidebar panel.</li>
+                            <li>New alternate zoom method when framing.  You can now adjust the zoom when framing objects, vertices, edges, faces, etc.</li>
+                            <li>New ability to frame multiple 3D viewports, even in multiple windows.  This is useful when framing objects or vertices when using custom layouts with multiple 3D views.</li>
+                            <li>Ability to choose whether you want to smoothly frame, or frame instantaneously.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h5>2019-12-22</h5>
                         <ul>
                             <li>Shortened add-on name from "Smart Frame Selection" to "Smart Frame"</li>
                             <li>Set default sidebar tab name to "Neltulz" so that all Neltulz related sidebars from various Neltulz add-ons will be organized here.</li>
@@ -307,12 +316,14 @@
                         </ul>
                     </li>
                     <li>
-                        2019-12-21
+                        <h5>2019-12-21</h5>
                         <ul>
                             <li>Smooth viewport animation: Added 'INVOKE_DEFAULT' to all view commands so that framing view or selected causes viewport to interpolate/animate to the destination.</li>
                         </ul>
                     </li>
-                    <li>2019-12-07
+                    <li>
+                        <h5>2019-12-07</h5>
+                        
                         <ul>
                             <li>Added ability to hide axes when isolating objects</li>
                             <li>Added "Use Extreme Isolate". When enabled, hidden objects will be "truly" hidden, granting a huge performance increase when adding objects to the scene and adjusting their operator properties.<br><br>
@@ -325,7 +336,9 @@
                             <li>Added ability to isolate even when no objects are selected</li>
                         </ul>
                     </li>
-                    <li>2019-10-12b
+                    <li>
+                        <h5>2019-10-12b</h5>
+                        
                         <ul>
                             <li>Added ability to move the viewport to the origin</li>
                             <li>More object type support for framing and isolating. (Surface, Metaball, Grease Pencil, Armatures, etc.)</li>
@@ -335,7 +348,9 @@
                             <li>More Hotkey (Keymaps)</li>
                         </ul>
                     </li>
-                    <li>2019-10-12
+                    <li>
+                        <h5>2019-10-12</h5>
+                        
                         <ul>
                             <li>Added ability to "Hide Floor on Isolate" (Enabled by default)</li>
                             <li>Added ability to "Frame" and "Isolate" Bezier Curve points</li>
@@ -343,15 +358,29 @@
                             <li>Added "Use Advanced Settings" checkbox and "Show Error Messages" checkbox</li>
                         </ul>
                     </li>
-                    <li>2019-10-09
+                    <li>
+                        <h5>2019-10-09</h5>
+                        
                         <ul>
                             <li>Added ability to collapse/expand list of excluded objects from isolate to prevent the panel from skyrocketing in height</li>
                             <li>Added ability to turn objects into templates (wireframe display with select-through capability).</li>
                         </ul>
                     </li>
-                    <li>2019-10-05 - Added ability to exclude certain objects from isolate select.  Useful for excluding image planes. Suggested by Piotr Jedzinski</li>
-                    <li>2019-08-28 - Fix bug when trying to frame all when there are no mesh objects selected in the scene.</li>
-                    <li>2019-08-20
+                    <li>
+                        <h5>2019-10-05</h5>
+                        <ul>
+                            <li>Added ability to exclude certain objects from isolate select.  Useful for excluding image planes. Suggested by Piotr Jedzinski</li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <h5>2019-08-28</h5>
+                        <ul>
+                            <li>Fix bug when trying to frame all when there are no mesh objects selected in the scene.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h5>2019-08-20</h5>
                         <ul>
                             <li>Added isolate support</li>
                             <li>Framing while nothing is selected now frames only selected mesh objects by default</li>
@@ -360,9 +389,25 @@
                             <li>2 new hotkeys (SHIFT+F to Isolate) (CTRL+SHIFT+F to Frame & Isolate)</li>
                         </ul>
                     </li>
-                    <li>2019-08-19 - Fixed panel showing things from another addon.  Disabled panel until needed.</li>
-                    <li>2019-08-18 - Changed license from "CC BY 4.0" to <span class="focusText">GNU GPL v3.0</span> because it's easier to select on Github</li>
-                    <li>2019-08-17 - First release!</li>
+                    <li>
+                        <h5>2019-08-19</h5>
+                        <ul>
+                            <li>Fixed panel showing things from another addon.  Disabled panel until needed.</li>
+                        </ul>
+                        
+                    </li>
+                    <li>
+                        <h5>2019-08-18</h5>
+                        <ul>
+                            <li>Changed license from "CC BY 4.0" to <span class="focusText">GNU GPL v3.0</span> because it's easier to select on Github</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h5>2019-08-17</h5>
+                        <ul>
+                            <li>First release!</li>
+                        </ul>
+                    </li>
                 </ul>
 
             <h3 id="links">Links</h3>

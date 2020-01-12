@@ -4,7 +4,14 @@ from . import misc_functions
 from bpy.props import (StringProperty, BoolProperty, IntProperty, FloatProperty, FloatVectorProperty, EnumProperty, PointerProperty)
 from bpy.types import (Panel, Operator, AddonPreferences, PropertyGroup)
 
-class NeltulzSmartFrameSel_IgnitProperties(bpy.types.PropertyGroup):
+
+class NTZSMFRM_ignitproperties(bpy.types.PropertyGroup):
+
+    preventInfiniteRecursion : BoolProperty (
+        name="Prevent Infinite Recursion",
+        description="Reveals options.",
+        default = False,
+    )
 
     bShowOptions : BoolProperty (
         name="Show Options",
@@ -12,17 +19,87 @@ class NeltulzSmartFrameSel_IgnitProperties(bpy.types.PropertyGroup):
         default = False,
     )
 
+    bUseSmoothFraming : BoolProperty (
+        name="Smoothly Frame",
+        default = True,
+    )
+
+    bShowFrameObjTypes : BoolProperty (
+        name="Show Frame Object Types",
+        description="Show Frame Object Types.",
+        default = True,
+    )
+
+    bShowExcludedObjFromIsolateTypes : BoolProperty (
+        name="Show Excluded Object From Isolate Types",
+        description="Show Excluded Object From Isolate Types.",
+        default = True,
+    )
+
+    bShowTemplatedObjs : BoolProperty (
+        name="Show Templated Objects",
+        description="Show Templated Objects",
+        default = True,
+    )
+
     useAdvancedSettings : BoolProperty(
         name="Use Advanced Settings",
         description="Use advanced settings (Default: False)",
         default = False
-        #update=neltulzSubD_useAdvancedSettings_toggled
+    )
+
+    defaultTemplateSelectableState_List = [
+        ("UNSET",        "Unset (Use Last Known)",         "", "",                    0),
+        ("UNSELECTABLE", "Un-selectable",                  "", "RESTRICT_SELECT_ON",  1),
+        ("SELECTABLE",   "Selectable",                     "", "RESTRICT_SELECT_OFF", 2),
+    ]
+
+    defaultTemplateSelectableState : EnumProperty (
+        items       = defaultTemplateSelectableState_List,
+        name        = "Default Template Selectable State",
+        description = "Default Selectable Method for new Template Objects",
+        default     = "UNSELECTABLE"
+    )
+
+    optionsPopoverEnum : EnumProperty (
+        items       = [("OPTIONS", "Options", "", "", 0)],
+        name        = "Options Popover Enum",
+        description = "Options Popover Enum",
+        default     = "OPTIONS"
+    )
+
+    frameObjTypeList = ["frameMesh", "frameCurve", "frameSurface", "frameMeta", "frameText", "frameGreasePen", "frameArmature", "frameLattice", "frameEmpty", "frameLight", "frameLightProbe", "frameCamera", "frameSpeaker"]
+
+    frameObjType : EnumProperty (
+        items       = [("OBJTYPE", "Object Types", "", "", 0)],
+        name        = "Frame Object Types",
+        description = "Frame Object Types",
+        default     = "OBJTYPE"
     )
 
     use_all_regions_when_framing : BoolProperty(
         name="Use all Regions when Framing",
         description="When framing an object, all regions will frame the object.  This is useful if you use Quad view. (Default: True)",
         default = True
+    )
+
+    use_all_3d_areas_when_framing : BoolProperty(
+        name="Use all 3D Areas when Framing",
+        description="When framing an object, all 3D Areas will frame the object.  This is useful if you use multiple 3D Views. (Default: True)",
+        default = True
+    )
+
+    calcZoomDistanceMethod_List = [
+        ("MIN", "Min", "Get the minimum length of the bounding box axes (or in the case of single vertice selection, only the closest vertice(s) will be framed)",                                                                 "", 0),
+        ("AVG", "Avg", "Get the average length of the bounding box axes (or in the case of single vertice selection, framing will be based on the average distance of all adjacent vertices.  Some vertices may not be framed)",   "", 1),
+        ("MAX", "Max", "Get the maximum length of the bounding box axes (or in the case of single vertice selection: All adjacent vertices will be framed)",                                                                       "", 2),
+    ]
+
+
+    calcZoomDistanceMethod : EnumProperty (
+        items       = calcZoomDistanceMethod_List,
+        name        = "Zoom Distance Calculation Method",
+        default     = "AVG"
     )
 
     showFrameList : BoolProperty(
