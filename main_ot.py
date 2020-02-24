@@ -99,6 +99,8 @@ class NTZSMFRM_OT_smartframe(bpy.types.Operator):
     #END draw()
 
     def execute(self, context):
+
+        addonPrefs = context.preferences.addons[__package__].preferences
         
         if not self.wasInvoked:
             self.invokeView = "EXEC_DEFAULT"
@@ -124,8 +126,8 @@ class NTZSMFRM_OT_smartframe(bpy.types.Operator):
                 showErrorMessages = False
 
         #use all regions when framing? (Useful for quad view)
-        bUseAllRegions = scene.ntzSmFrm.use_all_regions_when_framing
-        bUseAll3DAreas = scene.ntzSmFrm.use_all_3d_areas_when_framing
+        bUseAllRegions = addonPrefs.useAllRegionsWhenFraming
+        bUseAll3DAreas = addonPrefs.useAll3DAreasWhenFraming
 
         objectMode = "Unknown"
         selObjs = bpy.context.selected_objects
@@ -145,42 +147,42 @@ class NTZSMFRM_OT_smartframe(bpy.types.Operator):
                     selObjs.append(activeObj)
 
         visibilityCommandList = [
-            "bpy.context.space_data.show_object_viewport_mesh",
-            "bpy.context.space_data.show_object_viewport_curve",
-            "bpy.context.space_data.show_object_viewport_surf",
-            "bpy.context.space_data.show_object_viewport_meta",
-            "bpy.context.space_data.show_object_viewport_font",
-            "bpy.context.space_data.show_object_viewport_grease_pencil",
-            "bpy.context.space_data.show_object_viewport_armature",
-            "bpy.context.space_data.show_object_viewport_lattice",
-            "bpy.context.space_data.show_object_viewport_empty",
-            "bpy.context.space_data.show_object_viewport_light",
-            "bpy.context.space_data.show_object_viewport_light_probe",
-            "bpy.context.space_data.show_object_viewport_camera",
-            "bpy.context.space_data.show_object_viewport_speaker",
+            "context.space_data.show_object_viewport_mesh",
+            "context.space_data.show_object_viewport_curve",
+            "context.space_data.show_object_viewport_surf",
+            "context.space_data.show_object_viewport_meta",
+            "context.space_data.show_object_viewport_font",
+            "context.space_data.show_object_viewport_grease_pencil",
+            "context.space_data.show_object_viewport_armature",
+            "context.space_data.show_object_viewport_lattice",
+            "context.space_data.show_object_viewport_empty",
+            "context.space_data.show_object_viewport_light",
+            "context.space_data.show_object_viewport_light_probe",
+            "context.space_data.show_object_viewport_camera",
+            "context.space_data.show_object_viewport_speaker",
         ]
 
         visibilitySceneBoolList = [
-            "scene.ntzSmFrm.frameMesh",
-            "scene.ntzSmFrm.frameCurve",
-            "scene.ntzSmFrm.frameSurface",
-            "scene.ntzSmFrm.frameMeta",
-            "scene.ntzSmFrm.frameText",
-            "scene.ntzSmFrm.frameGreasePen",
-            "scene.ntzSmFrm.frameArmature",
-            "scene.ntzSmFrm.frameLattice",
-            "scene.ntzSmFrm.frameEmpty",
-            "scene.ntzSmFrm.frameLight",
-            "scene.ntzSmFrm.frameLightProbe",
-            "scene.ntzSmFrm.frameCamera",
-            "scene.ntzSmFrm.frameSpeaker",
+            "addonPrefs.frameMesh",
+            "addonPrefs.frameCurve",
+            "addonPrefs.frameSurface",
+            "addonPrefs.frameMeta",
+            "addonPrefs.frameText",
+            "addonPrefs.frameGreasePen",
+            "addonPrefs.frameArmature",
+            "addonPrefs.frameLattice",
+            "addonPrefs.frameEmpty",
+            "addonPrefs.frameLight",
+            "addonPrefs.frameLightProbe",
+            "addonPrefs.frameCamera",
+            "addonPrefs.frameSpeaker",
         ]
 
         previousVisibility = list()
 
         if self.frameSelection:
             #set obj type visibility so that certain object types can be excluded when framing
-            misc_functions.setObjTypeVisibility(self, context, scene, visibilityCommandList, previousVisibility, visibilitySceneBoolList)
+            misc_functions.setObjTypeVisibility(self, context, scene, addonPrefs, visibilityCommandList, previousVisibility, visibilitySceneBoolList)
 
         #if nothing is selected...
         if len(selObjs) == 0:
@@ -214,7 +216,7 @@ class NTZSMFRM_OT_smartframe(bpy.types.Operator):
                         misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
                     else:
-                        misc_functions.hideUnselected_Objs(self, context, scene,  selObjs, activeObj)
+                        misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
 
             else:
 
@@ -224,7 +226,7 @@ class NTZSMFRM_OT_smartframe(bpy.types.Operator):
                         misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
                     else:
-                        misc_functions.hideUnselected_Objs(self, context, scene,  selObjs, activeObj)
+                        misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
 
                 #user did not want to isolate selection, instead, frame select.
                 else:
@@ -255,7 +257,7 @@ class NTZSMFRM_OT_smartframe(bpy.types.Operator):
                     if totalNumVertsSel > 0:
                         
                         if self.frameSelection:
-                            misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                            misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
 
                     else:
 
@@ -264,7 +266,7 @@ class NTZSMFRM_OT_smartframe(bpy.types.Operator):
 
                             bpy.ops.object.mode_set(mode = 'OBJECT')
 
-                            misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                            misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
 
                             bpy.ops.object.mode_set(mode = 'EDIT')
                     
@@ -277,7 +279,7 @@ class NTZSMFRM_OT_smartframe(bpy.types.Operator):
                         else:
                             if totalNumVertsSel > 0:
                                 misc_functions.hideSelected_VertsEdgesFaces(self, context, scene)
-                                misc_functions.hideUnselected_Objs(self, context, scene, selObjs, activeObj)
+                                misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
 
                 elif activeObj.type == "CURVE":
 
@@ -299,7 +301,7 @@ class NTZSMFRM_OT_smartframe(bpy.types.Operator):
                     if totalNumCurvePointsAndHandles > 0:
 
                         if self.frameSelection:
-                            misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                            misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
 
                         if self.isolateSelection:
                             if scene.ntzSmFrm.currentlyBusyIsolating:
@@ -308,7 +310,7 @@ class NTZSMFRM_OT_smartframe(bpy.types.Operator):
 
                             else:
                                 misc_functions.hideSelected_CurvePointsAndHandles(self, context, scene)
-                                misc_functions.hideUnselected_Objs(self, context, scene, selObjs, activeObj)
+                                misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
 
                     else:
 
@@ -317,75 +319,75 @@ class NTZSMFRM_OT_smartframe(bpy.types.Operator):
 
                             bpy.ops.object.mode_set(mode = 'OBJECT')
 
-                            misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                            misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
 
                             bpy.ops.object.mode_set(mode = 'EDIT')
 
                 elif activeObj.type == "SURFACE":
                     if self.frameSelection:
-                        misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                        misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
 
                     if self.isolateSelection:
                         if scene.ntzSmFrm.currentlyBusyIsolating:
                             misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
                         else:
-                            misc_functions.hideUnselected_Objs(self, context, scene, selObjs, activeObj)
+                            misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
 
                 elif activeObj.type == "META":
                     if self.frameSelection:
-                        misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                        misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
                     
                     if self.isolateSelection:
                         if scene.ntzSmFrm.currentlyBusyIsolating:
                             misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
                         else:
-                            misc_functions.hideUnselected_Objs(self, context, scene, selObjs, activeObj)
+                            misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
                 
                 elif activeObj.type == "FONT":
                     if self.frameSelection:
-                        misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                        misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
                     
                     if self.isolateSelection:
                         if scene.ntzSmFrm.currentlyBusyIsolating:
                             misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
                         else:
-                            misc_functions.hideUnselected_Objs(self, context, scene, selObjs, activeObj)
+                            misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
 
                 elif activeObj.type == "ARMATURE":
                     if self.frameSelection:
-                        misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                        misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
 
                     if self.isolateSelection:
                         if scene.ntzSmFrm.currentlyBusyIsolating:
                             misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
                         else:
-                            misc_functions.hideUnselected_Objs(self, context, scene, selObjs, activeObj)
+                            misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
                 
                 elif activeObj.type == "LATTICE":
                     if self.frameSelection:
-                        misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                        misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
 
                     if self.isolateSelection:
                         if scene.ntzSmFrm.currentlyBusyIsolating:
                             misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
                         else:
-                            misc_functions.hideUnselected_Objs(self, context, scene, selObjs, activeObj)
+                            misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
 
                 else:
                     if self.frameSelection:
-                        misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                        misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
 
                     if self.isolateSelection:
                         if scene.ntzSmFrm.currentlyBusyIsolating:
                             misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
                         else:
-                            misc_functions.hideUnselected_Objs(self, context, scene, selObjs, activeObj)
+                            misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
                     
             elif objectMode == "OBJECT":
 
@@ -393,10 +395,10 @@ class NTZSMFRM_OT_smartframe(bpy.types.Operator):
                 if self.frameSelection:
                     if self.isolateSelection:
                         if not scene.ntzSmFrm.currentlyBusyIsolating:
-                            misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                            misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
                     
                     else:
-                        misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                        misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
                 
                 #isolate selection
                 if self.isolateSelection:
@@ -405,57 +407,57 @@ class NTZSMFRM_OT_smartframe(bpy.types.Operator):
                         misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
                     else:
-                        misc_functions.hideUnselected_Objs(self, context, scene, selObjs, activeObj)
+                        misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
 
             elif objectMode == "EDIT_GPENCIL":
                 if activeObj.type == "GPENCIL":
                     if self.frameSelection:
-                        misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                        misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
 
                     if self.isolateSelection:
                         if scene.ntzSmFrm.currentlyBusyIsolating:
                             misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
                         else:
-                            misc_functions.hideUnselected_Objs(self, context, scene, selObjs, activeObj)
+                            misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
 
             elif objectMode == "PAINT_GPENCIL":
                 if activeObj.type == "GPENCIL":
                     if self.frameSelection:
-                        misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                        misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
 
                     if self.isolateSelection:
                         if scene.ntzSmFrm.currentlyBusyIsolating:
                             misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
                         else:
-                            misc_functions.hideUnselected_Objs(self, context, scene, selObjs, activeObj)
+                            misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
 
             elif objectMode == "SCULPT_GPENCIL":
                 if activeObj.type == "GPENCIL":
                     if self.frameSelection:
-                        misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                        misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
 
                     if self.isolateSelection:
                         if scene.ntzSmFrm.currentlyBusyIsolating:
                             misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
                         else:
-                            misc_functions.hideUnselected_Objs(self, context, scene, selObjs, activeObj)
+                            misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
 
                 
 
             elif objectMode == "POSE":
                 if activeObj.type == "ARMATURE":
                     if self.frameSelection:
-                        misc_functions.viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
+                        misc_functions.viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj)
 
                     if self.isolateSelection:
                         if scene.ntzSmFrm.currentlyBusyIsolating:
                             misc_functions.unhidePreviouslyHidden_Objs(self, context, scene)
 
                         else:
-                            misc_functions.hideUnselected_Objs(self, context, scene, selObjs, activeObj)
+                            misc_functions.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
 
         #re-enable visibility for all objects
         misc_functions.reenableVisibilityForAllObjs(self, context, scene, previousVisibility, visibilityCommandList)
@@ -468,10 +470,13 @@ class NTZSMFRM_OT_smartframe(bpy.types.Operator):
     # END execute()
 
     def invoke(self, context, event):
+
+        addonPrefs = context.preferences.addons[__package__].preferences
+
         scene = context.scene
         self.wasInvoked = True
 
-        if scene.ntzSmFrm.bUseSmoothFraming:
+        if addonPrefs.bUseSmoothFraming:
             self.invokeView = "INVOKE_DEFAULT"
         else:
             self.invokeView = "EXEC_DEFAULT"

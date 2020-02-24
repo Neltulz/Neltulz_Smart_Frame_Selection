@@ -24,7 +24,9 @@ class NTZSMFRM_PT_frameoptions(Panel):
 
         frameOptionsSection = layout.column(align=True)
 
-        misc_layout.frameOptions_sectionInner(self, context, scene, frameOptionsSection)
+        addonPrefs = context.preferences.addons[__package__].preferences
+
+        misc_layout.frameOptions_sectionInner(self, context, scene, addonPrefs, frameOptionsSection)
 
     #END draw()
 
@@ -43,7 +45,9 @@ class NTZSMFRM_PT_isolateoptions(Panel):
 
         isolateOptionsSection = layout.column(align=True)
 
-        misc_layout.isolateOptions_sectionInner(self, context, scene, isolateOptionsSection)
+        addonPrefs = context.preferences.addons[__package__].preferences
+
+        misc_layout.isolateOptions_sectionInner(self, context, scene, addonPrefs, isolateOptionsSection)
 
     #END draw()
 
@@ -61,7 +65,9 @@ class NTZSMFRM_PT_templateoptions(Panel):
 
         templateOptionsSection = layout.column(align=True)
 
-        misc_layout.templateOptions_section(self, context, scene, False, templateOptionsSection)
+        addonPrefs = bpy.context.preferences.addons[__package__].preferences
+
+        misc_layout.templateOptions_section(self, context, scene, addonPrefs, False, templateOptionsSection)
 
     #END draw()
 
@@ -86,7 +92,7 @@ class NTZSMFRM_PT_options(Panel):
 
 
 class NTZSMFRM_PT_sidebarpanel(Panel):
-    bl_label = "Smart Frame v1.0.13"
+    bl_label = "Smart Frame v1.0.14"
     bl_category = "Neltulz"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"

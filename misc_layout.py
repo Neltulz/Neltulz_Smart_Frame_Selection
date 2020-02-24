@@ -34,7 +34,7 @@ def createShowHide(self, context, scene, properties, showHideBool, optionalCheck
     emptySpace.alignment = "EXPAND"
     emptySpace.prop(data, showHideBool, text=" ", emboss=False)
 
-def createProp(self, context, scene, bEnabled, labelText, data, propItem, scale_y, labelScale, propScale, labelAlign, propAlign, propText, bExpandProp, bUseSlider, layout):
+def createProp(self, context, scene, bEnabled, labelText, data, propItem, scale_y, labelWidth, propWidth, labelJustify, propJustify, propText, bExpandProp, bUseSlider, layout):
 
     propRow = layout.row(align=True)
 
@@ -45,20 +45,20 @@ def createProp(self, context, scene, bEnabled, labelText, data, propItem, scale_
 
     propRowLabel = propRow.row(align=True)
     propRowLabel.alignment="EXPAND"
-    propRowLabel.ui_units_x = labelScale
+    propRowLabel.ui_units_x = labelWidth
 
     propRowLabel1 = propRowLabel.row(align=True)
-    propRowLabel1.alignment=labelAlign
+    propRowLabel1.alignment=labelJustify
     propRowLabel1.scale_x = 1
 
     propRowLabel1.label(text=labelText)
 
     propRowItem = propRow.row(align=True)
-    propRowItem.alignment=propAlign
+    propRowItem.alignment=propJustify
 
     propRowItem1 = propRowItem.row(align=True)
-    propRowItem1.alignment=propAlign
-    propRowItem1.ui_units_x = propScale
+    propRowItem1.alignment=propJustify
+    propRowItem1.ui_units_x = propWidth
     propRowItem1.scale_x = 100
 
     propRowItem1.prop(data, propItem, text=propText, expand=bExpandProp, slider=bUseSlider)
@@ -73,6 +73,7 @@ def mainSmartFramePanel(self, context, bUseCompactSidebarPanel, bUseCompactPopup
     
     scene = context.scene
     layout = self.layout.column(align=True)
+    addonPrefs = context.preferences.addons[__package__].preferences
 
     #determine if panel is inside of a popop/pie menu
     panelInsidePopupOrPie = context.region.type == 'WINDOW'
@@ -88,28 +89,32 @@ def mainSmartFramePanel(self, context, bUseCompactSidebarPanel, bUseCompactPopup
             layout.label(text="Neltulz - Smart Frame")
 
     #main frame & isolate buttons
-    frameIsolateButtons_section(self, context, scene, panelInsidePopupOrPie, bUseCompactSidebarPanel, bUseCompactPopupAndPiePanel, layout)
+    frameIsolateButtons_section(self, context, scene, addonPrefs, panelInsidePopupOrPie, bUseCompactSidebarPanel, bUseCompactPopupAndPiePanel, layout)
 
 
-def frameIsolateButtons_section(self, context, scene, panelInsidePopupOrPie, bUseCompactSidebarPanel, bUseCompactPopupAndPiePanel, layout):
+def frameIsolateButtons_section(self, context, scene, addonPrefs, panelInsidePopupOrPie, bUseCompactSidebarPanel, bUseCompactPopupAndPiePanel, layout):
 
     compactPanelConditions = (panelInsidePopupOrPie and bUseCompactPopupAndPiePanel) or (not panelInsidePopupOrPie and bUseCompactSidebarPanel)
 
     if compactPanelConditions:
         frameText = "Frm"
-        if scene.ntzSmFrm.useExtremeHideOnIsolate:
+        if addonPrefs.useExtremeHideOnIsolate:
             isolateText = "E-Iso"
+            isolateIcon="NONE"
         else:
             isolateText = "Iso"
+            isolateIcon="NONE"
         scaleY = 1
         frameAndIsolateText = "Frm+Iso"
         templateText = "Tmplt"
         viewOriginText = "View2Ori"
     else:
         frameText = "Frame"
-        if scene.ntzSmFrm.useExtremeHideOnIsolate:
+        if addonPrefs.useExtremeHideOnIsolate:
             isolateText = "Ext Isolate"
+            isolateIcon="ERROR"
         else:
+            isolateIcon="NONE"
             isolateText = "Isolate"
         scaleY = 1.5
         frameAndIsolateText = "Frame & Isolate"
@@ -144,8 +149,8 @@ def frameIsolateButtons_section(self, context, scene, panelInsidePopupOrPie, bUs
     isolateOpRow = isolateRow.row(align=True)
     isolateOpRow.alignment="EXPAND"
     isolateOpRow.scale_x = 100
-    op = isolateOpRow.operator('ntz_smrt_frm.select', text=isolateText, icon="NONE")
-    if scene.ntzSmFrm.useExtremeHideOnIsolate:
+    op = isolateOpRow.operator('ntz_smrt_frm.select', text=isolateText, icon=isolateIcon)
+    if addonPrefs.useExtremeHideOnIsolate:
         op.tooltip = "Extreme Isolate an object, selection of objects, vertice, edge, face, or when all else fails: extreme isolate everything.  Extreme isolate can improve performance when isolating objects, but take longer to unhide because every object in the viewport must be re-rendered"
     else:
         op.tooltip = "Isolate an object, selection of objects, vertice, edge, face, or when all else fails: isolate everything"
@@ -185,9 +190,9 @@ def frameIsolateButtons_section(self, context, scene, panelInsidePopupOrPie, bUs
     op = templateOpRow.operator('ntz_smrt_frm.toggletemplate', text=templateText, icon="NONE")
     op.tooltip = "Converts an object to a wireframe with click-through (unselectable) capability for reference purposes"
 
-    if scene.ntzSmFrm.defaultTemplateSelectableState == "UNSELECTABLE":
+    if addonPrefs.defaultTemplateSelectableState == "UNSELECTABLE":
         op.makeSelectable = False
-    elif scene.ntzSmFrm.defaultTemplateSelectableState == "SELECTABLE":
+    elif addonPrefs.defaultTemplateSelectableState == "SELECTABLE":
         op.makeSelectable = True
 
     templatePopoverRow = templateRow.row(align=True)
@@ -200,28 +205,28 @@ def frameIsolateButtons_section(self, context, scene, panelInsidePopupOrPie, bUs
     col = layout.column(align=True)
     op = col.operator('ntz_smrt_frm.viewporttoorigin', text=viewOriginText)
 
-def frameOptions_sectionInner(self, context, scene, layout):
+def frameOptions_sectionInner(self, context, scene, addonPrefs, layout):
 
-    layout.prop(scene.ntzSmFrm, "bUseSmoothFraming", expand=True)
+    layout.prop(addonPrefs, "bUseSmoothFraming", expand=True)
 
     layout.separator()
 
     label = layout.label(text="Calculate Zoom based on:")
     zoomDistanceMethodRow = layout.row(align=True)
-    zoomDistanceMethodRow.prop(scene.ntzSmFrm, "calcZoomDistanceMethod", expand=True)
+    zoomDistanceMethodRow.prop(addonPrefs, "calcZoomDistanceMethod", expand=True)
 
     layout.separator()
 
-    frameObjType_sectionInner(self, context, scene, False, layout)
+    frameObjType_sectionInner(self, context, scene, addonPrefs, False, layout)
 
     layout.separator()
 
-    layout.prop(scene.ntzSmFrm, "use_all_regions_when_framing", expand=True)
-    layout.prop(scene.ntzSmFrm, "use_all_3d_areas_when_framing", expand=True)
+    layout.prop(addonPrefs, "useAllRegionsWhenFraming", expand=True)
+    layout.prop(addonPrefs, "useAll3DAreasWhenFraming", expand=True)
 
         
 
-def isolateOptions_sectionInner(self, context, scene, layout):
+def isolateOptions_sectionInner(self, context, scene, addonPrefs, layout):
 
     excludedObjsFromIsolate_sectionInner(self, context, scene, False, layout)
 
@@ -229,20 +234,20 @@ def isolateOptions_sectionInner(self, context, scene, layout):
 
     row = layout.row(align=True)
 
-    row.prop(scene.ntzSmFrm, "hideFloorOnIsolate", expand=True, text="Floor", toggle=True, icon="MESH_GRID")
+    row.prop(addonPrefs, "hideFloorOnIsolate", expand=True, text="Floor", toggle=True, icon="MESH_GRID")
 
-    row.prop(scene.ntzSmFrm, "hideAxesOnIsolate", expand=True, text="Axes", toggle=True, icon="EMPTY_AXIS")
+    row.prop(addonPrefs, "hideAxesOnIsolate", expand=True, text="Axes", toggle=True, icon="EMPTY_AXIS")
 
     layout.separator()
 
-    layout.prop(scene.ntzSmFrm, "useExtremeHideOnIsolate", expand=True)
+    layout.prop(addonPrefs, "useExtremeHideOnIsolate", expand=True)
 
 
 
 
 
 
-def frameObjType_sectionInner(self, context, scene, bIndent, layout):
+def frameObjType_sectionInner(self, context, scene, addonPrefs, bIndent, layout):
 
     if bIndent:
         row = layout.row(align=True)
@@ -257,8 +262,8 @@ def frameObjType_sectionInner(self, context, scene, bIndent, layout):
 
     grid = frameObjTypeCol.grid_flow(row_major=True, columns=2, align=True)
 
-    for frameObjType in scene.ntzSmFrm.frameObjTypeList:
-        grid.prop(scene.ntzSmFrm, frameObjType, expand=True, toggle=True)
+    for frameObjType in addonPrefs.frameObjTypeList:
+        grid.prop(addonPrefs, frameObjType, expand=True, toggle=True)
 
     #END "When Nothing is selected, frame..." section
 
@@ -325,7 +330,7 @@ def excludedObjsFromIsolate_sectionInner(self, context, scene, bIndent, layout):
     op = excludedObjectsSectionCol.operator('ntz_smrt_frm.clearexcludedobjs', text="", icon="TRASH")
 
 
-def templateOptions_section(self, context, scene,  bIndent, layout):
+def templateOptions_section(self, context, scene, addonPrefs, bIndent, layout):
 
     layout.separator()
 
@@ -339,7 +344,7 @@ def templateOptions_section(self, context, scene,  bIndent, layout):
         templatedObjsCol = layout
 
     templatedObjsCol.label(text="Default Template Selectable State")
-    prop = templatedObjsCol.prop(scene.ntzSmFrm, 'defaultTemplateSelectableState', text="", toggle=True)
+    prop = templatedObjsCol.prop(addonPrefs, 'defaultTemplateSelectableState', text="", toggle=True)
 
     templatedObjsCol.separator()
 
@@ -407,9 +412,9 @@ def templateOptions_section(self, context, scene,  bIndent, layout):
 
     op = templatedObjectsSectionCol.operator('ntz_smrt_frm.convertobjtotemplate', text="", icon="ADD")
 
-    if scene.ntzSmFrm.defaultTemplateSelectableState == "UNSELECTABLE":
+    if addonPrefs.defaultTemplateSelectableState == "UNSELECTABLE":
         op.makeSelectable = False
-    elif scene.ntzSmFrm.defaultTemplateSelectableState == "SELECTABLE":
+    elif addonPrefs.defaultTemplateSelectableState == "SELECTABLE":
         op.makeSelectable = True
 
     removeOpRow = templatedObjectsSectionCol.row(align=True)

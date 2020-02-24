@@ -57,6 +57,10 @@ class NTZSMFRM_OT_removeobjfromexcludedisolateobjs(Operator):
     def poll(cls, context):
         return True
 
+    def draw(self, context):
+        pass
+    #END draw()
+
     def execute(self, context):
 
         scene = context.scene
@@ -262,6 +266,14 @@ class NTZSMFRM_OT_toggletemplate(Operator):
     @classmethod
     def description(cls, context, properties):
         return properties.tooltip
+
+    
+    def draw(self, context):
+        scene = context.scene
+        lay = self.layout.column(align=True)
+
+        lay.prop(self, 'makeSelectable')
+    #END draw()
 
     def execute(self, context):
 
@@ -502,6 +514,10 @@ class NTZSMFRM_OT_untemplatespecificobj(Operator):
     def poll(cls, context):
         return True
 
+    def draw(self, context):
+        pass
+    #END draw()
+
     def execute(self, context):
         scene = context.scene
 
@@ -647,12 +663,18 @@ class NTZSMFRM_OT_viewtoorigin(Operator):
     def poll(cls, context):
         return True
 
+    def draw(self, context):
+        pass
+    #END draw()
+
     def execute(self, context):
 
         if not self.wasInvoked:
             self.invokeView = "EXEC_DEFAULT"
 
         scene = context.scene
+
+        addonPrefs = context.preferences.addons[__package__].preferences
 
         modeAtBegin = "Unknown"
         selObjs = bpy.context.selected_objects
@@ -674,8 +696,8 @@ class NTZSMFRM_OT_viewtoorigin(Operator):
             bpy.ops.object.mode_set(mode = 'OBJECT')
 
         #use all regions when framing? (Useful for quad view)
-        bUseAllRegions = scene.ntzSmFrm.use_all_regions_when_framing
-        bUseAll3DAreas = scene.ntzSmFrm.use_all_3d_areas_when_framing
+        bUseAllRegions = addonPrefs.useAllRegionsWhenFraming
+        bUseAll3DAreas = addonPrefs.useAll3DAreasWhenFraming
         
         misc_functions.view2Origin(self, context, bUseAllRegions, bUseAll3DAreas)
 
@@ -695,9 +717,12 @@ class NTZSMFRM_OT_viewtoorigin(Operator):
 
     def invoke(self, context, event):
         scene = context.scene
+
+        addonPrefs = context.preferences.addons[__package__].preferences
+
         self.wasInvoked = True
 
-        if scene.ntzSmFrm.bUseSmoothFraming:
+        if addonPrefs.bUseSmoothFraming:
             self.invokeView = "INVOKE_DEFAULT"
         else:
             self.invokeView = "EXEC_DEFAULT"
@@ -728,6 +753,10 @@ class NTZSMFRM_OT_selobj(Operator):
     @classmethod
     def poll(cls, context):
         return True
+
+    def draw(self, context):
+        pass
+    #END draw()
 
     def execute(self, context):
 

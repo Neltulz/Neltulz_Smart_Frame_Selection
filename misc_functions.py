@@ -1,10 +1,11 @@
 import bpy
 import bmesh
-from operator import itemgetter
-from mathutils import Vector
 import numpy
-from itertools import chain
-from itertools import permutations
+
+from operator       import itemgetter
+from mathutils      import Vector
+from itertools      import chain
+from itertools      import permutations
 
 def average(lst): 
     return sum(lst) / len(lst) 
@@ -105,7 +106,7 @@ def getSelectedCurvePointsAndHandles(self, context, obj):
             
         return selected_curve_points_and_handles
 
-def hideUnselected_Objs(self, context, scene, selObjs, activeObj):
+def hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj):
 
     foundObjectToHide = False #initial declare
 
@@ -120,7 +121,7 @@ def hideUnselected_Objs(self, context, scene, selObjs, activeObj):
                     obj['ntzSmFrm_hidden'] = 1
 
                     #should object use extreme hidden to grant a big performance increase?
-                    if scene.ntzSmFrm.useExtremeHideOnIsolate:
+                    if addonPrefs.useExtremeHideOnIsolate:
                         if obj.hide_viewport == False:
                             obj.hide_viewport = True
 
@@ -129,7 +130,7 @@ def hideUnselected_Objs(self, context, scene, selObjs, activeObj):
     if foundObjectToHide:
         scene.ntzSmFrm.currentlyBusyIsolating = True
 
-        hideFloorAndAxes(self, context, scene)
+        hideFloorAndAxes(self, context, scene, addonPrefs)
 
         #hide all but selected
         for obj in bpy.context.scene.objects:
@@ -141,9 +142,9 @@ def hideUnselected_Objs(self, context, scene, selObjs, activeObj):
     else:
         scene.ntzSmFrm.currentlyBusyIsolating = True
 
-        hideFloorAndAxes(self, context, scene)
+        hideFloorAndAxes(self, context, scene, addonPrefs)
 
-def hideFloorAndAxes(self, context, scene):
+def hideFloorAndAxes(self, context, scene, addonPrefs):
     #store current floor visibility for use later:
     scene.ntzSmFrm.floorWasPreviouslyVisible = bpy.context.space_data.overlay.show_floor
 
@@ -152,10 +153,10 @@ def hideFloorAndAxes(self, context, scene):
     scene.ntzSmFrm.axis_y_wasPreviouslyVisible = bpy.context.space_data.overlay.show_axis_y
     scene.ntzSmFrm.axis_z_wasPreviouslyVisible = bpy.context.space_data.overlay.show_axis_z
 
-    if scene.ntzSmFrm.hideFloorOnIsolate:
+    if addonPrefs.hideFloorOnIsolate:
         bpy.context.space_data.overlay.show_floor = False
 
-    if scene.ntzSmFrm.hideAxesOnIsolate:
+    if addonPrefs.hideAxesOnIsolate:
         bpy.context.space_data.overlay.show_axis_x = False
         bpy.context.space_data.overlay.show_axis_y = False
         bpy.context.space_data.overlay.show_axis_z = False
@@ -208,7 +209,7 @@ def unhidePreviouslyHidden_CurvePointsAndHandles(self, context, scene):
     bpy.ops.curve.reveal()
     scene.ntzSmFrm.currentlyBusyIsolating = False
 
-def setObjTypeVisibility(self, context, scene, visibilityCommandList, previousVisibility, visibilitySceneBoolList):
+def setObjTypeVisibility(self, context, scene, addonPrefs, visibilityCommandList, previousVisibility, visibilitySceneBoolList):
     #store previousVisibility so that it can be returned to original setting later
     for index, command in enumerate(visibilityCommandList):
         #store previousVisibility so that it can be returned to original setting later
@@ -287,8 +288,7 @@ def getSelObjsFromOutlinerAndViewport(self, context, modeAtBegin):
     return selObjs
 
 
-def viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj):
-
+def viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj):
 
     winAreaRegionInfoList = [] #declare
 
@@ -331,16 +331,16 @@ def viewSelected(self, context, scene, modeAtBegin, bUseAllRegions, bUseAll3DAre
 
             #determine the bounding box size
             if self.viewSelectMethod == "SINGLE_VERT":
-                self.viewSelectionWidth = max_dim_from_single_vert_and_adjacent_verts(self, context, scene, allSelVerts, objWithSingleVert)
+                self.viewSelectionWidth = max_dim_from_single_vert_and_adjacent_verts(self, context, scene, addonPrefs, allSelVerts, objWithSingleVert)
                 
             elif self.viewSelectMethod == "EDGE":
-                self.viewSelectionWidth = ( max_dim_from_selection(self, context, scene) * 1)
+                self.viewSelectionWidth = ( max_dim_from_selection(self, context, scene, addonPrefs) * 1)
                 
             elif self.viewSelectMethod == "FACE":
-                self.viewSelectionWidth = ( max_dim_from_selection(self, context, scene) * 1)
+                self.viewSelectionWidth = ( max_dim_from_selection(self, context, scene, addonPrefs) * 1)
 
             elif self.viewSelectMethod == "OBJ":
-                self.viewSelectionWidth = ( max_dim_from_objs_or_empties(self, context, scene, selObjs) * 1)
+                self.viewSelectionWidth = ( max_dim_from_objs_or_empties(self, context, scene, addonPrefs, selObjs) * 1)
 
 
 
@@ -462,7 +462,7 @@ def bbox_from_selection():
 
     return bbox_vecs
 
-def max_dim_from_single_vert_and_adjacent_verts(self, context, scene, allSelVerts, objWithSingleVert):
+def max_dim_from_single_vert_and_adjacent_verts(self, context, scene, addonPrefs, allSelVerts, objWithSingleVert):
     startVert = allSelVerts[0]
     matrix = objWithSingleVert.matrix_world
 
@@ -488,16 +488,16 @@ def max_dim_from_single_vert_and_adjacent_verts(self, context, scene, allSelVert
     objWithSingleVert.data.vertices[ int(startVert['VERTID']) ].select = True
     bpy.ops.object.mode_set(mode='EDIT') # switch back to edit mode
 
-    if scene.ntzSmFrm.calcZoomDistanceMethod == "MIN":
+    if addonPrefs.calcZoomDistanceMethod == "MIN":
         result = min(edgeLengths)
-    elif scene.ntzSmFrm.calcZoomDistanceMethod == "MAX": 
+    elif addonPrefs.calcZoomDistanceMethod == "MAX": 
         result = max(edgeLengths)
-    elif scene.ntzSmFrm.calcZoomDistanceMethod == "AVG":
+    elif addonPrefs.calcZoomDistanceMethod == "AVG":
         result = average(edgeLengths)
 
     return result
 
-def max_dim_from_selection(self, context, scene):
+def max_dim_from_selection(self, context, scene, addonPrefs):
 
     scene = context.scene
 
@@ -514,16 +514,16 @@ def max_dim_from_selection(self, context, scene):
     it.shape = (len(all_vcos), 3)
     _min, _max = Vector(it.min(0).tolist()), Vector(it.max(0).tolist())
 
-    if scene.ntzSmFrm.calcZoomDistanceMethod == "MIN":
+    if addonPrefs.calcZoomDistanceMethod == "MIN":
         result = min((_max - _min))
-    elif scene.ntzSmFrm.calcZoomDistanceMethod == "MAX": 
+    elif addonPrefs.calcZoomDistanceMethod == "MAX": 
         result = max((_max - _min))
-    elif scene.ntzSmFrm.calcZoomDistanceMethod == "AVG":
+    elif addonPrefs.calcZoomDistanceMethod == "AVG":
         result = average((_max - _min))
 
     return result
 
-def max_dim_from_objs_or_empties(self, context, scene, selObjs):
+def max_dim_from_objs_or_empties(self, context, scene, addonPrefs, selObjs):
     scene = context.scene
 
     #Get max dimension from objects and empties - Special thanks & source: iceythe
@@ -542,11 +542,11 @@ def max_dim_from_objs_or_empties(self, context, scene, selObjs):
     it.shape = (len(all_vcos), 3)
     _min, _max = Vector(it.min(0).tolist()), Vector(it.max(0).tolist())
 
-    if scene.ntzSmFrm.calcZoomDistanceMethod == "MIN":
+    if addonPrefs.calcZoomDistanceMethod == "MIN":
         result = min((_max - _min))
-    elif scene.ntzSmFrm.calcZoomDistanceMethod == "MAX": 
+    elif addonPrefs.calcZoomDistanceMethod == "MAX": 
         result = max((_max - _min))
-    elif scene.ntzSmFrm.calcZoomDistanceMethod == "AVG":
+    elif addonPrefs.calcZoomDistanceMethod == "AVG":
         result = average((_max - _min))
 
     return result

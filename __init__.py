@@ -3,7 +3,7 @@ bl_info = {
     "author" : "Neil V. Moore",
     "description" : 'More ways to "Frame Selection" when pressing the keyboard shortcut',
     "blender" : (2, 80, 0),
-    "version" : (1, 0, 13),
+    "version" : (1, 0, 14),
     "location" : "View3D",
     "warning" : "",
     "category" : "Generic",
@@ -33,7 +33,7 @@ from . misc_ot              import NTZSMFRM_OT_clearalltemplatedobjs
 from . misc_ot              import NTZSMFRM_OT_viewtoorigin
 from . misc_ot              import NTZSMFRM_OT_changetemplateselectionstate
 from . misc_ot              import NTZSMFRM_OT_selobj
-from . addon_preferences    import NTZSMFRM_OT_addonprefs
+from . addonPrefs    import NTZSMFRM_OT_addonprefs
 from . panels               import NTZSMFRM_PT_frameoptions
 from . panels               import NTZSMFRM_PT_isolateoptions
 from . panels               import NTZSMFRM_PT_templateoptions
@@ -101,7 +101,7 @@ def register():
 
     # update panel name
     prefs = bpy.context.preferences.addons[__name__].preferences
-    addon_preferences.update_panel(prefs, bpy.context)
+    addonPrefs.update_panel(prefs, bpy.context)
 
     #add keymaps from keymaps.py
     keymaps.neltulz_smart_frame_sel_register_keymaps(addon_keymaps)
