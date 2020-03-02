@@ -1,6 +1,6 @@
 import bpy
-from . properties import NTZSMFRM_ignitproperties
-from . import misc_functions
+from . properties import ntzsf_scene_props
+from . import miscFunc
 
 from bpy.props import (StringProperty, BoolProperty, IntProperty, FloatProperty, FloatVectorProperty, EnumProperty, PointerProperty)
 from bpy.types import (Panel, Operator, AddonPreferences, PropertyGroup)
@@ -9,10 +9,10 @@ from bpy.types import (Panel, Operator, AddonPreferences, PropertyGroup)
 #    Add Object to Excluded Isolate Objects
 # -----------------------------------------------------------------------------
 
-class NTZSMFRM_OT_addobjtoexcludedisolateobjs(Operator):
+class VIEW3D_OT_ntzsf_add_obj_to_excluded_isolate_objs(Operator):
     """Tooltip"""
-    bl_idname = "ntz_smrt_frm.excludeobj"
-    bl_label = 'Neltulz - Smart Frame : Add obj to "Isolate Exclusion List"'
+    bl_idname = "view3d.ntzsf_add_obj_to_excluded_isolate_objs"
+    bl_label = 'NTZSF : Add obj to "Isolate Exclusion List"'
     bl_description = 'Add the object to the list of excluded isolated objects'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -40,10 +40,10 @@ class NTZSMFRM_OT_addobjtoexcludedisolateobjs(Operator):
 #    Remove Object From Excluded Isolate Objects
 # -----------------------------------------------------------------------------
 
-class NTZSMFRM_OT_removeobjfromexcludedisolateobjs(Operator):
+class VIEW3D_OT_ntzsf_del_obj_from_excluded_isolate_objs(Operator):
     """Tooltip"""
-    bl_idname = "ntz_smrt_frm.unexcludeobj"
-    bl_label = 'Neltulz - Smart Frame : Remove obj from "Isolate Exclusion List"'
+    bl_idname = "view3d.ntzsf_del_obj_from_excluded_isolate_objs"
+    bl_label = 'NTZSF : Remove obj from "Isolate Exclusion List"'
     bl_description = 'Remove the object from the excluded isolated objects'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -110,10 +110,10 @@ class NTZSMFRM_OT_removeobjfromexcludedisolateobjs(Operator):
 #    Refresh Excluded Isolate Objects
 # -----------------------------------------------------------------------------
 
-class NTZSMFRM_OT_refreshexcludedisolateobjs(Operator):
+class VIEW3D_OT_ntzsf_refresh_excluded_isolate_objs(Operator):
     """Tooltip"""
-    bl_idname = "ntz_smrt_frm.refreshexcludedobjlist"
-    bl_label = 'Neltulz - Smart Frame : Refresh "Isolate Exclusion List"'
+    bl_idname = "view3d.ntzsf_refresh_excluded_isolate_objs"
+    bl_label = 'NTZSF : Refresh "Isolate Exclusion List"'
     bl_description = 'Refresh the list of excluded isolated objects.  Useful if you have renamed objects and the list no longer matches'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -149,10 +149,10 @@ class NTZSMFRM_OT_refreshexcludedisolateobjs(Operator):
 #    Clear all Excluded Isolate Objects
 # -----------------------------------------------------------------------------
 
-class NTZSMFRM_OT_clearallexcludedisolateobjs(Operator):
+class VIEW3D_OT_ntzsf_clear_all_excluded_isolate_objs(Operator):
     """Tooltip"""
-    bl_idname = "ntz_smrt_frm.clearexcludedobjs"
-    bl_label = 'Neltulz - Smart Frame : Clear "Isolate Exclusion List"'
+    bl_idname = "view3d.ntzsf_clear_all_excluded_isolate_objs"
+    bl_label = 'NTZSF : Clear "Isolate Exclusion List"'
     bl_description = 'Clear the list of excluded isolated objects.'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -185,10 +185,10 @@ class NTZSMFRM_OT_clearallexcludedisolateobjs(Operator):
 #    Template (Converts object to wireframe with click-through)
 # -----------------------------------------------------------------------------
 
-class NTZSMFRM_OT_templateobj(Operator):
+class VIEW3D_OT_ntzsf_convert_obj_to_template(Operator):
     """Tooltip"""
-    bl_idname = "ntz_smrt_frm.convertobjtotemplate"
-    bl_label = 'Neltulz - Smart Frame : Add obj to "Templated Obj List"'
+    bl_idname = "view3d.ntzsf_convert_obj_to_template"
+    bl_label = 'NTZSF : Add obj to "Templated Obj List"'
     bl_description = 'Converts object to wireframe with click-through'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -214,7 +214,7 @@ class NTZSMFRM_OT_templateobj(Operator):
         except:
             modeAtBegin = "OBJECT"
 
-        selObjs = misc_functions.getSelObjsFromOutlinerAndViewport(self, context, modeAtBegin)
+        selObjs = miscFunc.getSelObjsFromOutlinerAndViewport(self, context, modeAtBegin)
 
         for obj in selObjs:
             scene.ntzSmFrm.templatedObjects.add(obj.name)
@@ -244,10 +244,10 @@ class NTZSMFRM_OT_templateobj(Operator):
 #    Toggle Template of objects highlighted in outliner
 # -----------------------------------------------------------------------------
 
-class NTZSMFRM_OT_toggletemplate(Operator):
+class VIEW3D_OT_ntzsf_toggle_template(Operator):
     """Tooltip"""
-    bl_idname = "ntz_smrt_frm.toggletemplate"
-    bl_label = 'Neltulz - Smart Frame : Toggle template of object(s)'
+    bl_idname = "view3d.ntzsf_toggle_template"
+    bl_label = 'NTZSF : Template'
     bl_description = 'Toggles object(s) between template and non template'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -287,7 +287,7 @@ class NTZSMFRM_OT_toggletemplate(Operator):
         except:
             modeAtBegin = "OBJECT"
 
-        selObjs = misc_functions.getSelObjsFromOutlinerAndViewport(self, context, modeAtBegin)
+        selObjs = miscFunc.getSelObjsFromOutlinerAndViewport(self, context, modeAtBegin)
 
         if modeAtBegin == "OBJECT":
             if len(selObjs) > 0:
@@ -305,15 +305,28 @@ class NTZSMFRM_OT_toggletemplate(Operator):
                 pass
             
             if objIsTemplate:
-                bpy.ops.ntz_smrt_frm.untemplatespecificobj(objectToUntemplate = f"{obj.name}" )
+                bpy.ops.view3d.ntzsf_untemplate_specific_obj(objectToUntemplate = f"{obj.name}" )
             else:
-                bpy.ops.ntz_smrt_frm.templatespecificobj(objectToTemplate = f"{obj.name}", makeSelectable = self.makeSelectable )
+                bpy.ops.view3d.ntzsf_template_specific_obj(objectToTemplate = f"{obj.name}", makeSelectable = self.makeSelectable )
 
     
         #Templated
 
         return {'FINISHED'}
     # END execute()
+
+
+    def invoke(self, context, event):
+
+        addonPrefs = context.preferences.addons[__package__].preferences
+
+        if addonPrefs.defaultTemplateSelectableState == "UNSELECTABLE":
+            self.makeSelectable = False
+        elif addonPrefs.defaultTemplateSelectableState == "SELECTABLE":
+            self.makeSelectable = True
+        
+        return self.execute(context)
+    #END invoke()
 # END Operator()
 
 
@@ -321,10 +334,10 @@ class NTZSMFRM_OT_toggletemplate(Operator):
 #    Refresh Templated Objects List
 # -----------------------------------------------------------------------------
 
-class NTZSMFRM_OT_refreshtemplateobjs(Operator):
+class VIEW3D_OT_ntzsf_refresh_template_objs(Operator):
     """Tooltip"""
-    bl_idname = "ntz_smrt_frm.refreshtemplatedobjlist"
-    bl_label = 'Neltulz - Smart Frame : Refresh "Templated Obj List"'
+    bl_idname = "view3d.ntzsf_refresh_template_objs"
+    bl_label = 'NTZSF : Refresh "Templated Obj List"'
     bl_description = 'Refresh the list of templated objects'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -360,10 +373,10 @@ class NTZSMFRM_OT_refreshtemplateobjs(Operator):
 #    Un-Template Highlighted Objects in the Outliner
 # -----------------------------------------------------------------------------
 
-class NTZSMFRM_OT_untemplateobjs(Operator):
+class VIEW3D_OT_ntzsf_untemplate_objs(Operator):
     """Tooltip"""
-    bl_idname = "ntz_smrt_frm.untemplateobjs"
-    bl_label = 'Neltulz - Smart Frame : Remove obj from "Templated Obj List"'
+    bl_idname = "view3d.ntzsf_untemplate_objs"
+    bl_label = 'NTZSF : Remove obj from "Templated Obj List"'
     bl_description = 'Remove the templated object'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -433,10 +446,10 @@ class NTZSMFRM_OT_untemplateobjs(Operator):
 #    Template Specific Obj
 # -----------------------------------------------------------------------------
 
-class NTZSMFRM_OT_templatespecificobj(Operator):
+class VIEW3D_OT_ntzsf_template_specific_obj(Operator):
     """Tooltip"""
-    bl_idname = "ntz_smrt_frm.templatespecificobj"
-    bl_label = 'Neltulz - Smart Frame : Add specific obj from "Templated Obj List"'
+    bl_idname = "view3d.ntzsf_template_specific_obj"
+    bl_label = 'NTZSF : Add specific obj from "Templated Obj List"'
     bl_description = 'Add specific object from templated object list'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -497,10 +510,10 @@ class NTZSMFRM_OT_templatespecificobj(Operator):
 #    Un-Template Specific Obj
 # -----------------------------------------------------------------------------
 
-class NTZSMFRM_OT_untemplatespecificobj(Operator):
+class VIEW3D_OT_ntzsf_untemplate_specific_obj(Operator):
     """Tooltip"""
-    bl_idname = "ntz_smrt_frm.untemplatespecificobj"
-    bl_label = 'Neltulz - Smart Frame : Remove specific obj from "Templated Obj List"'
+    bl_idname = "view3d.ntzsf_untemplate_specific_obj"
+    bl_label = 'NTZSF : Remove specific obj from "Templated Obj List"'
     bl_description = 'Remove specific object from templated object list'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -551,10 +564,10 @@ class NTZSMFRM_OT_untemplatespecificobj(Operator):
 #    Clear all Templated Objects
 # -----------------------------------------------------------------------------
 
-class NTZSMFRM_OT_clearalltemplatedobjs(Operator):
+class VIEW3D_OT_ntzsf_clear_all_template_objs(Operator):
     """Tooltip"""
-    bl_idname = "ntz_smrt_frm.clearalltemplatedobjs"
-    bl_label = 'Neltulz - Smart Frame : Clear "Templated Obj List"'
+    bl_idname = "view3d.ntzsf_clear_all_template_objs"
+    bl_label = 'NTZSF : Clear "Templated Obj List"'
     bl_description = 'Clear the list of templated objects'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -591,10 +604,10 @@ class NTZSMFRM_OT_clearalltemplatedobjs(Operator):
 #    Make all existing template objects selectable
 # -----------------------------------------------------------------------------
 
-class NTZSMFRM_OT_changetemplateselectionstate(Operator):
+class VIEW3D_OT_ntzsf_change_template_selection_state(Operator):
     """Tooltip"""
-    bl_idname = "ntz_smrt_frm.changetemplateselectionstate"
-    bl_label = 'Neltulz - Smart Frame : Change All Template Selection State'
+    bl_idname = "view3d.ntzsf_change_template_selection_state"
+    bl_label = 'NTZSF : Change All Template Selection State'
     bl_description = 'Change All Template Selection State'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -611,7 +624,7 @@ class NTZSMFRM_OT_changetemplateselectionstate(Operator):
     def execute(self, context):
 
         #refresh templated obj list
-        bpy.ops.ntz_smrt_frm.refreshtemplatedobjlist()
+        bpy.ops.view3d.ntzsf_refresh_template_objs()
 
         scene = context.scene
         objs = [obj for obj in bpy.context.scene.objects]
@@ -637,110 +650,14 @@ class NTZSMFRM_OT_changetemplateselectionstate(Operator):
     # END execute()
 # END Operator()
 
-
-
-# -----------------------------------------------------------------------------
-#    Viewport to Origin
-# -----------------------------------------------------------------------------
-
-class NTZSMFRM_OT_viewtoorigin(Operator):
-    """Tooltip"""
-    bl_idname = "ntz_smrt_frm.viewporttoorigin"
-    bl_label = 'Neltulz - Smart Frame : Viewport to Origin'
-    bl_description = 'Moves the viewport to the origin'
-    bl_options = {'REGISTER', 'UNDO'}
-
-    wasInvoked : BoolProperty(
-        name="Operator was invoked",
-        default = False
-    )
-
-    invokeView : StringProperty(
-        name="Invoke View Operators",
-    )
-
-    @classmethod
-    def poll(cls, context):
-        return True
-
-    def draw(self, context):
-        pass
-    #END draw()
-
-    def execute(self, context):
-
-        if not self.wasInvoked:
-            self.invokeView = "EXEC_DEFAULT"
-
-        scene = context.scene
-
-        addonPrefs = context.preferences.addons[__package__].preferences
-
-        modeAtBegin = "Unknown"
-        selObjs = bpy.context.selected_objects
-        activeObj = bpy.context.view_layer.objects.active
-        
-        try:
-            #try to determine objectMode
-            modeAtBegin = bpy.context.object.mode
-        except:
-            modeAtBegin = "OBJECT"
-
-        
-        if activeObj is not None:
-            if not activeObj in selObjs:
-                if modeAtBegin == "EDIT":
-                    selObjs.append(activeObj)
-
-        if modeAtBegin != "OBJECT":
-            bpy.ops.object.mode_set(mode = 'OBJECT')
-
-        #use all regions when framing? (Useful for quad view)
-        bUseAllRegions = addonPrefs.useAllRegionsWhenFraming
-        bUseAll3DAreas = addonPrefs.useAll3DAreasWhenFraming
-        
-        misc_functions.view2Origin(self, context, bUseAllRegions, bUseAll3DAreas)
-
-        if len(selObjs) > 0:
-            bpy.context.view_layer.objects.active = selObjs[0]
-            selObjs[0].select_set(True)
-
-            if modeAtBegin == "EDIT":
-                bpy.ops.object.mode_set(mode = 'EDIT')
-
-        #final step
-        if self.wasInvoked:
-            self.wasInvoked = False
-
-        return {'FINISHED'}
-    # END execute()
-
-    def invoke(self, context, event):
-        scene = context.scene
-
-        addonPrefs = context.preferences.addons[__package__].preferences
-
-        self.wasInvoked = True
-
-        if addonPrefs.bUseSmoothFraming:
-            self.invokeView = "INVOKE_DEFAULT"
-        else:
-            self.invokeView = "EXEC_DEFAULT"
-        
-        return self.execute(context)
-    #END invoke()
-    
-# END Operator()
-
-
 # -----------------------------------------------------------------------------
 #    Select Object by Name
 # -----------------------------------------------------------------------------
 
-class NTZSMFRM_OT_selobj(Operator):
+class VIEW3D_OT_ntzsf_sel_obj_by_name(Operator):
     """Tooltip"""
-    bl_idname = "ntz_smrt_frm.selobj"
-    bl_label = 'Neltulz - Smart Frame : Select Object'
+    bl_idname = "view3d.ntzsf_sel_obj_by_name"
+    bl_label = 'NTZSF : Select Object'
     bl_description = 'Selects and object by name'
     bl_options = {'REGISTER', 'UNDO'}
 

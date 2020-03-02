@@ -2,15 +2,15 @@
 # recommended by "cytoo"
 
 import bpy
-from . panels  import NTZSMFRM_PT_sidebarpanel
-from .         import misc_layout
+from . panels  import VIEW3D_PT_ntzsf_sb_panel
+from .         import miscLay
 
 from bpy.props import (StringProperty, BoolProperty, IntProperty, FloatProperty, FloatVectorProperty, EnumProperty, PointerProperty)
 from bpy.types import (Panel, Operator, AddonPreferences, PropertyGroup)
 
 # Define Panel classes for updating
 panels = (
-        NTZSMFRM_PT_sidebarpanel,
+        VIEW3D_PT_ntzsf_sb_panel,
         )
 
         
@@ -55,7 +55,7 @@ def update_panel(self, context):
         pass
 
 
-class NTZSMFRM_OT_addonprefs(AddonPreferences):
+class VIEW3D_OT_ntzsf_addon_prefs(AddonPreferences):
     # this must match the addon name, use '__package__'
     # when defining this in a submodule of a python package.
     bl_idname = __package__
@@ -70,7 +70,7 @@ class NTZSMFRM_OT_addonprefs(AddonPreferences):
     navTabs : EnumProperty (
         items       = navTabs_List,
         name        = "Navigation Tabs",
-        default     = "TMPL"
+        default     = "FRAME"
     )
 
     category: StringProperty(
@@ -130,6 +130,22 @@ class NTZSMFRM_OT_addonprefs(AddonPreferences):
     )
 
     frameObjTypeList = ["frameMesh", "frameCurve", "frameSurface", "frameMeta", "frameText", "frameGreasePen", "frameArmature", "frameLattice", "frameEmpty", "frameLight", "frameLightProbe", "frameCamera", "frameSpeaker"]
+
+    frameObjTypeList2 = {
+        'MESH':         'frameMesh',
+        'CURVE':        'frameCurve',
+        'SURFACE':      'frameSurface',
+        'META':         'frameMeta',
+        'FONT':         'frameText',
+        'GPENCIL':      'frameGreasePen',
+        'ARMATURE':     'frameArmature',
+        'LATTICE':      'frameLattice',
+        'EMPTY':        'frameEmpty',
+        'LIGHT':        'frameLight',
+        'LIGHTPROBE':   'frameLightProbe',
+        'CAMERA':       'frameCamera',
+        'SPEAKER':      'frameSpeaker',
+    }
 
     frameMesh : BoolProperty(
         name="Mesh",
@@ -221,6 +237,23 @@ class NTZSMFRM_OT_addonprefs(AddonPreferences):
         default = True
     )
 
+    #Updated by "Frame", "Isolate" and, "Frame & Isolate" operators at end of execute, and fetched by the operator on invoke
+    use_zoomAdjust : BoolProperty (default=True)
+    zoomAdjust : FloatProperty(default=0)
+
+
+    maxVertAllowanceForZoomAdjust : IntProperty (
+        name="Total",
+        description="Maximum number of vertices a mesh can have in order to to use Zoom Adjust.  This is a performance setting.  Setting this number too high can result in program slowness and instability.  Recommended: 1 million or less",
+        default = 1000000
+    )
+
+    maxVertSelectionAllowanceForZoomAdjust : IntProperty (
+        name="Selected",
+        description='Maximum number of vertices a mesh can have "Selected" in order to to use Zoom Adjust.  This is a performance setting.  Setting this number too high can result in program slowness and instability.  Recommended: 10,000 or less',
+        default = 10000
+    )
+
     # -----------------------------------------------------------------------------
     #    Isolate
     # -----------------------------------------------------------------------------
@@ -287,16 +320,16 @@ class NTZSMFRM_OT_addonprefs(AddonPreferences):
             labelWidth = 7
             propWidth = 15
 
-            misc_layout.createProp(self, context, None, True,           "Sidebar Panel",                      self, "sidebarPanelSize",      propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
-            misc_layout.createProp(self, context, None, bTabCatEnabled, "Tab Category",                       self, "category",              propHeight, labelWidth, propWidth, labelJustify, propJustify, "",    True, False, box)
-            misc_layout.createProp(self, context, None, True,           "Popup & Pie Panel",                  self, "popupAndPiePanelSize",  propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
+            miscLay.createProp(self, context, None, True,           "Sidebar Panel",                      self, "sidebarPanelSize",      propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
+            miscLay.createProp(self, context, None, bTabCatEnabled, "Tab Category",                       self, "category",              propHeight, labelWidth, propWidth, labelJustify, propJustify, "",    True, False, box)
+            miscLay.createProp(self, context, None, True,           "Popup & Pie Panel",                  self, "popupAndPiePanelSize",  propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
 
         elif self.navTabs == "FRAME":
             propHeight = 1
             labelWidth = 7
             propWidth = 15
             
-            misc_layout.createProp(self, context, None, True,           "",                                   self, "bUseSmoothFraming",     propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
+            miscLay.createProp(self, context, None, True,           "",                                   self, "bUseSmoothFraming",     propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
             
 
             
@@ -389,6 +422,38 @@ class NTZSMFRM_OT_addonprefs(AddonPreferences):
             propRow.prop(self, "useAllRegionsWhenFraming", toggle=True, text="Regions")          
             propRow.prop(self, "useAll3DAreasWhenFraming", toggle=True, text="3D Areas")
 
+            # Max Allowable Total Verts:
+            #-----------------------------------------------------------------------------------------------------------
+            row = box.row(align=True)
+
+            col1MasterContainer = row.row(align=True)
+            col1MasterContainer.alignment="EXPAND"
+            col1MasterContainer.ui_units_x = labelWidth
+
+            col1Container = col1MasterContainer.column(align=True)
+            col1Container.alignment=labelJustify
+            col1Container.scale_x = 1
+            col1Container.scale_y = 0.75
+
+            col1Container.separator(factor=2.5)
+            col1Container.label(text='Max Vert Limit')
+            col1Container.label(text='for Zoom Adjust:')
+
+            col2MasterContainer = row.row(align=True)
+            col2MasterContainer.alignment=propJustify
+
+            col2Container = col2MasterContainer.column(align=True)
+            col2Container.alignment=propJustify
+            col2Container.ui_units_x = propWidth
+            col2Container.scale_x = 100
+
+            col2Container.separator(factor=1)
+
+            propRow = col2Container.column(align=True)
+            
+            propRow.prop(self, "maxVertAllowanceForZoomAdjust")
+            propRow.prop(self, "maxVertSelectionAllowanceForZoomAdjust")
+
 
 
 
@@ -423,7 +488,7 @@ class NTZSMFRM_OT_addonprefs(AddonPreferences):
             propRow.prop(self, 'hideAxesOnIsolate',  text="Axes", toggle=False, icon="EMPTY_AXIS")
 
 
-            misc_layout.createProp(self, context, None, True,           "",                                    self, "useExtremeHideOnIsolate",  propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
+            miscLay.createProp(self, context, None, True,           "",                                    self, "useExtremeHideOnIsolate",  propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
 
         elif self.navTabs == "TMPL":
             propHeight = 1

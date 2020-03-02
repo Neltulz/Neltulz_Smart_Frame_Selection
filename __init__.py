@@ -3,7 +3,7 @@ bl_info = {
     "author" : "Neil V. Moore",
     "description" : 'More ways to "Frame Selection" when pressing the keyboard shortcut',
     "blender" : (2, 80, 0),
-    "version" : (1, 0, 14),
+    "version" : (1, 0, 15),
     "location" : "View3D",
     "warning" : "",
     "category" : "Generic",
@@ -17,29 +17,41 @@ bl_info = {
 
 import bpy
 
-from . properties           import NTZSMFRM_ignitproperties
-from . main_ot              import NTZSMFRM_OT_smartframe
-from . misc_ot              import NTZSMFRM_OT_addobjtoexcludedisolateobjs
-from . misc_ot              import NTZSMFRM_OT_removeobjfromexcludedisolateobjs
-from . misc_ot              import NTZSMFRM_OT_refreshexcludedisolateobjs
-from . misc_ot              import NTZSMFRM_OT_clearallexcludedisolateobjs
-from . misc_ot              import NTZSMFRM_OT_templateobj
-from . misc_ot              import NTZSMFRM_OT_refreshtemplateobjs
-from . misc_ot              import NTZSMFRM_OT_untemplateobjs
-from . misc_ot              import NTZSMFRM_OT_toggletemplate
-from . misc_ot              import NTZSMFRM_OT_templatespecificobj
-from . misc_ot              import NTZSMFRM_OT_untemplatespecificobj
-from . misc_ot              import NTZSMFRM_OT_clearalltemplatedobjs
-from . misc_ot              import NTZSMFRM_OT_viewtoorigin
-from . misc_ot              import NTZSMFRM_OT_changetemplateselectionstate
-from . misc_ot              import NTZSMFRM_OT_selobj
-from . addonPrefs    import NTZSMFRM_OT_addonprefs
-from . panels               import NTZSMFRM_PT_frameoptions
-from . panels               import NTZSMFRM_PT_isolateoptions
-from . panels               import NTZSMFRM_PT_templateoptions
-from . panels               import NTZSMFRM_PT_options
-from . panels               import NTZSMFRM_PT_sidebarpanel
+#scene properties
+from . properties          import ntzsf_scene_props
 
+#main operator
+from . mainOt              import VIEW3D_OT_ntzsf_smart_frame
+from . mainOt              import VIEW3D_OT_ntzsf_isolate
+from . mainOt              import VIEW3D_OT_ntzsf_frame_and_isolate
+from . mainOt              import VIEW3D_OT_ntzsf_viewport_to_origin
+
+#misc operators
+from . miscOt              import VIEW3D_OT_ntzsf_add_obj_to_excluded_isolate_objs
+from . miscOt              import VIEW3D_OT_ntzsf_del_obj_from_excluded_isolate_objs
+from . miscOt              import VIEW3D_OT_ntzsf_refresh_excluded_isolate_objs
+from . miscOt              import VIEW3D_OT_ntzsf_clear_all_excluded_isolate_objs
+from . miscOt              import VIEW3D_OT_ntzsf_convert_obj_to_template
+from . miscOt              import VIEW3D_OT_ntzsf_refresh_template_objs
+from . miscOt              import VIEW3D_OT_ntzsf_untemplate_objs
+from . miscOt              import VIEW3D_OT_ntzsf_toggle_template
+from . miscOt              import VIEW3D_OT_ntzsf_template_specific_obj
+from . miscOt              import VIEW3D_OT_ntzsf_untemplate_specific_obj
+from . miscOt              import VIEW3D_OT_ntzsf_clear_all_template_objs
+from . miscOt              import VIEW3D_OT_ntzsf_change_template_selection_state
+from . miscOt              import VIEW3D_OT_ntzsf_sel_obj_by_name
+
+#addon preferences operator
+from . addonPreferences    import VIEW3D_OT_ntzsf_addon_prefs
+
+#panels
+from . panels              import VIEW3D_PT_ntzsf_frame_options
+from . panels              import VIEW3D_PT_ntzsf_isolate_options
+from . panels              import VIEW3D_PT_ntzsf_tmpl_options
+from . panels              import VIEW3D_PT_ntzsf_options
+from . panels              import VIEW3D_PT_ntzsf_sb_panel
+
+#keymaps
 from . import keymaps
 
 PendingDeprecationWarning
@@ -55,28 +67,39 @@ if bDebugModeActive:
 # -----------------------------------------------------------------------------  
 
 classes = (
-    NTZSMFRM_ignitproperties,
-    NTZSMFRM_OT_smartframe,
-    NTZSMFRM_OT_addobjtoexcludedisolateobjs,
-    NTZSMFRM_OT_removeobjfromexcludedisolateobjs,
-    NTZSMFRM_OT_refreshexcludedisolateobjs,
-    NTZSMFRM_OT_clearallexcludedisolateobjs,
-    NTZSMFRM_OT_templateobj,
-    NTZSMFRM_OT_refreshtemplateobjs,
-    NTZSMFRM_OT_untemplateobjs,
-    NTZSMFRM_OT_toggletemplate,
-    NTZSMFRM_OT_templatespecificobj,
-    NTZSMFRM_OT_untemplatespecificobj,
-    NTZSMFRM_OT_clearalltemplatedobjs,
-    NTZSMFRM_OT_viewtoorigin,
-    NTZSMFRM_OT_changetemplateselectionstate,
-    NTZSMFRM_OT_addonprefs,
-    NTZSMFRM_OT_selobj,
-    NTZSMFRM_PT_frameoptions,
-    NTZSMFRM_PT_isolateoptions,
-    NTZSMFRM_PT_templateoptions,
-    NTZSMFRM_PT_options,
-    NTZSMFRM_PT_sidebarpanel,
+    #scene properties
+    ntzsf_scene_props,
+
+    #main operator
+    VIEW3D_OT_ntzsf_smart_frame,
+    VIEW3D_OT_ntzsf_isolate,
+    VIEW3D_OT_ntzsf_frame_and_isolate,
+    VIEW3D_OT_ntzsf_viewport_to_origin,
+
+    #misc operators
+    VIEW3D_OT_ntzsf_add_obj_to_excluded_isolate_objs,
+    VIEW3D_OT_ntzsf_del_obj_from_excluded_isolate_objs,
+    VIEW3D_OT_ntzsf_refresh_excluded_isolate_objs,
+    VIEW3D_OT_ntzsf_clear_all_excluded_isolate_objs,
+    VIEW3D_OT_ntzsf_convert_obj_to_template,
+    VIEW3D_OT_ntzsf_refresh_template_objs,
+    VIEW3D_OT_ntzsf_untemplate_objs,
+    VIEW3D_OT_ntzsf_toggle_template,
+    VIEW3D_OT_ntzsf_template_specific_obj,
+    VIEW3D_OT_ntzsf_untemplate_specific_obj,
+    VIEW3D_OT_ntzsf_clear_all_template_objs,
+    VIEW3D_OT_ntzsf_change_template_selection_state,
+    VIEW3D_OT_ntzsf_sel_obj_by_name,
+
+    #addon preferences operator
+    VIEW3D_OT_ntzsf_addon_prefs,
+
+    #panels
+    VIEW3D_PT_ntzsf_frame_options,
+    VIEW3D_PT_ntzsf_isolate_options,
+    VIEW3D_PT_ntzsf_tmpl_options,
+    VIEW3D_PT_ntzsf_options,
+    VIEW3D_PT_ntzsf_sb_panel,
 )
 
 # -----------------------------------------------------------------------------
@@ -100,14 +123,14 @@ def register():
         register_class(cls)
 
     # update panel name
-    prefs = bpy.context.preferences.addons[__name__].preferences
-    addonPrefs.update_panel(prefs, bpy.context)
-
+    addonPrefs = bpy.context.preferences.addons[__name__].preferences
+    addonPreferences.update_panel(addonPrefs, bpy.context)
+    
     #add keymaps from keymaps.py
-    keymaps.neltulz_smart_frame_sel_register_keymaps(addon_keymaps)
+    keymaps.ntzsfRegKM(addon_keymaps)
 
     #add property group to the scene
-    bpy.types.Scene.ntzSmFrm = bpy.props.PointerProperty(type=NTZSMFRM_ignitproperties)
+    bpy.types.Scene.ntzSmFrm = bpy.props.PointerProperty(type=ntzsf_scene_props)
 
     #vscode pme workaround from iceythe (part 1 of 2)
     #must be appended to def register() so that it is the last thing that executes
@@ -122,10 +145,10 @@ def unregister():
         unregister_class(cls)
 
     #remove keymaps
-    keymaps.neltulz_smart_frame_sel_unregister_keymaps(addon_keymaps)
+    keymaps.ntzsfUnregKM(addon_keymaps)
 
 if __name__ == "__main__":
     register()
 
     # test call
-    bpy.ops.ntz_smrt_frm.select()
+    bpy.ops.view3d.ntzsf_smart_frame()

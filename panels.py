@@ -1,7 +1,7 @@
 import bpy
-from . properties import NTZSMFRM_ignitproperties
-from . import misc_functions
-from . import misc_layout
+from . properties import ntzsf_scene_props
+from . import miscFunc
+from . import miscLay
 
 from bpy.props import (StringProperty, BoolProperty, IntProperty, FloatProperty, FloatVectorProperty, EnumProperty, PointerProperty)
 from bpy.types import (Panel, Operator, AddonPreferences, PropertyGroup, Menu)
@@ -10,9 +10,9 @@ from bpy.types import (Panel, Operator, AddonPreferences, PropertyGroup, Menu)
 #   Panel
 # ----------------------------------------------------------------------------- 
 
-class NTZSMFRM_PT_frameoptions(Panel):
+class VIEW3D_PT_ntzsf_frame_options(Panel):
     bl_label = "Neltulz - Frame Options"
-    bl_idname = "NTZSMFRM_PT_frameoptions"
+    bl_idname = "VIEW3D_PT_ntzsf_frame_options"
     bl_category = ""
     bl_space_type = "VIEW_3D"
     bl_region_type = "WINDOW"
@@ -26,14 +26,14 @@ class NTZSMFRM_PT_frameoptions(Panel):
 
         addonPrefs = context.preferences.addons[__package__].preferences
 
-        misc_layout.frameOptions_sectionInner(self, context, scene, addonPrefs, frameOptionsSection)
+        miscLay.frameOptions_sectionInner(self, context, scene, addonPrefs, frameOptionsSection)
 
     #END draw()
 
 
-class NTZSMFRM_PT_isolateoptions(Panel):
+class VIEW3D_PT_ntzsf_isolate_options(Panel):
     bl_label = "Neltulz - Isolate Options"
-    bl_idname = "NTZSMFRM_PT_isolateoptions"
+    bl_idname = "VIEW3D_PT_ntzsf_isolate_options"
     bl_category = ""
     bl_space_type = "VIEW_3D"
     bl_region_type = "WINDOW"
@@ -47,13 +47,13 @@ class NTZSMFRM_PT_isolateoptions(Panel):
 
         addonPrefs = context.preferences.addons[__package__].preferences
 
-        misc_layout.isolateOptions_sectionInner(self, context, scene, addonPrefs, isolateOptionsSection)
+        miscLay.isolateOptions_sectionInner(self, context, scene, addonPrefs, isolateOptionsSection)
 
     #END draw()
 
-class NTZSMFRM_PT_templateoptions(Panel):
+class VIEW3D_PT_ntzsf_tmpl_options(Panel):
     bl_label = "Neltulz - Isolate Options"
-    bl_idname = "NTZSMFRM_PT_templateoptions"
+    bl_idname = "VIEW3D_PT_ntzsf_tmpl_options"
     bl_category = ""
     bl_space_type = "VIEW_3D"
     bl_region_type = "WINDOW"
@@ -67,13 +67,13 @@ class NTZSMFRM_PT_templateoptions(Panel):
 
         addonPrefs = bpy.context.preferences.addons[__package__].preferences
 
-        misc_layout.templateOptions_section(self, context, scene, addonPrefs, False, templateOptionsSection)
+        miscLay.templateOptions_section(self, context, scene, addonPrefs, False, templateOptionsSection)
 
     #END draw()
 
-class NTZSMFRM_PT_options(Panel):
+class VIEW3D_PT_ntzsf_options(Panel):
     bl_label = "Neltulz - Options"
-    bl_idname = "NTZSMFRM_PT_options"
+    bl_idname = "VIEW3D_PT_ntzsf_options"
     bl_category = ""
     bl_space_type = "VIEW_3D"
     bl_region_type = "WINDOW"
@@ -85,14 +85,14 @@ class NTZSMFRM_PT_options(Panel):
 
         optionsSection = layout.column(align=True)
 
-        misc_layout.options_sectionInner(self, context, scene, True, False, False, False, optionsSection)
+        miscLay.options_sectionInner(self, context, scene, True, False, False, False, optionsSection)
 
     #END draw()
 
 
 
-class NTZSMFRM_PT_sidebarpanel(Panel):
-    bl_label = "Smart Frame v1.0.14"
+class VIEW3D_PT_ntzsf_sb_panel(Panel):
+    bl_label = "Smart Frame v1.0.15"
     bl_category = "Neltulz"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -110,5 +110,5 @@ class NTZSMFRM_PT_sidebarpanel(Panel):
     )
 
     def draw(self, context):
-        misc_layout.mainSmartFramePanel(self, context, self.bUseCompactSidebarPanel, self.bUseCompactPopupAndPiePanel)
+        miscLay.mainSmartFramePanel(self, context, self.bUseCompactSidebarPanel, self.bUseCompactPopupAndPiePanel)
     #END draw()

@@ -131,13 +131,14 @@ def frameIsolateButtons_section(self, context, scene, addonPrefs, panelInsidePop
     frameOpRow = frameRow.column(align=True)
     frameOpRow.alignment="EXPAND"
     frameOpRow.scale_x = 100
-    op = frameOpRow.operator('ntz_smrt_frm.select', text=frameText, icon="NONE")
-    op.tooltip = "Frame an object, selection of objects, vertice, edge, face, or when all else fails: frame everything"
-    op.frameSelection=True
-    op.isolateSelection=False
+    op = frameOpRow.operator('view3d.ntzsf_smart_frame', text=frameText, icon="NONE")
+    op.tooltip              = "Frame an object, selection of objects, vertice, edge, face, or when all else fails: frame everything"
+    op.frameSelection       = True
+    op.isolateSelection     = False
+    op.frameMethod          = "SEL"
 
     framePopoverRow = frameRow.row(align=True)
-    popover = framePopoverRow.popover(text="", panel="NTZSMFRM_PT_frameoptions", icon="DOWNARROW_HLT")
+    popover = framePopoverRow.popover(text="", panel="VIEW3D_PT_ntzsf_frame_options", icon="DOWNARROW_HLT")
 
     frameAndIsolateRow.separator()
 
@@ -149,16 +150,14 @@ def frameIsolateButtons_section(self, context, scene, addonPrefs, panelInsidePop
     isolateOpRow = isolateRow.row(align=True)
     isolateOpRow.alignment="EXPAND"
     isolateOpRow.scale_x = 100
-    op = isolateOpRow.operator('ntz_smrt_frm.select', text=isolateText, icon=isolateIcon)
-    if addonPrefs.useExtremeHideOnIsolate:
-        op.tooltip = "Extreme Isolate an object, selection of objects, vertice, edge, face, or when all else fails: extreme isolate everything.  Extreme isolate can improve performance when isolating objects, but take longer to unhide because every object in the viewport must be re-rendered"
-    else:
-        op.tooltip = "Isolate an object, selection of objects, vertice, edge, face, or when all else fails: isolate everything"
-    op.frameSelection=False
-    op.isolateSelection=True
+    op = isolateOpRow.operator('view3d.ntzsf_isolate', text=isolateText, icon=isolateIcon)
+    op.tooltip              = "Isolate an object, selection of objects, vertice, edge, face, or when all else fails: isolate everything"
+    op.frameSelection       = False
+    op.isolateSelection     = True
+    op.frameMethod          = "SEL"
 
     IsolatePopoverRow = isolateRow.row(align=True)
-    popover = IsolatePopoverRow.popover(text="", panel="NTZSMFRM_PT_isolateoptions", icon="DOWNARROW_HLT")
+    popover = IsolatePopoverRow.popover(text="", panel="VIEW3D_PT_ntzsf_isolate_options", icon="DOWNARROW_HLT")
 
     layout.separator()
 
@@ -174,10 +173,11 @@ def frameIsolateButtons_section(self, context, scene, addonPrefs, panelInsidePop
 
     if scene.ntzSmFrm.currentlyBusyIsolating:
         frameAndIsolateOpRow.enabled=False
-    op = frameAndIsolateOpRow.operator('ntz_smrt_frm.select', text=frameAndIsolateText)
-    op.tooltip = "Frame and Isolate an object, selection of objects, vertices, edges, or faces, simultaneously, or when all else fails: everything"
-    op.frameSelection=True
-    op.isolateSelection=True
+    op = frameAndIsolateOpRow.operator('view3d.ntzsf_frame_and_isolate', text=frameAndIsolateText)
+    op.tooltip              = "Frame and Isolate an object, selection of objects, vertices, edges, or faces, simultaneously, or when all else fails: everything"
+    op.frameSelection       = True
+    op.isolateSelection     = True
+    op.frameMethod          = "SEL"
 
     frameAndIsolateAndTemplateRow.separator()
 
@@ -187,23 +187,22 @@ def frameIsolateButtons_section(self, context, scene, addonPrefs, panelInsidePop
     templateOpRow.alignment="EXPAND"
     templateOpRow.scale_x = 100
 
-    op = templateOpRow.operator('ntz_smrt_frm.toggletemplate', text=templateText, icon="NONE")
+    op = templateOpRow.operator('view3d.ntzsf_toggle_template', text=templateText, icon="NONE")
     op.tooltip = "Converts an object to a wireframe with click-through (unselectable) capability for reference purposes"
 
-    if addonPrefs.defaultTemplateSelectableState == "UNSELECTABLE":
-        op.makeSelectable = False
-    elif addonPrefs.defaultTemplateSelectableState == "SELECTABLE":
-        op.makeSelectable = True
-
     templatePopoverRow = templateRow.row(align=True)
-    popover = templatePopoverRow.popover(text="", panel="NTZSMFRM_PT_templateoptions", icon="DOWNARROW_HLT")
+    popover = templatePopoverRow.popover(text="", panel="VIEW3D_PT_ntzsf_tmpl_options", icon="DOWNARROW_HLT")
 
     layout.separator()
 
 
-
+    #Viewport to Origin
     col = layout.column(align=True)
-    op = col.operator('ntz_smrt_frm.viewporttoorigin', text=viewOriginText)
+    op = col.operator('view3d.ntzsf_viewport_to_origin', text=viewOriginText)
+    op.tooltip              = "Move the viewport to the origin"
+    op.frameSelection       = True
+    op.isolateSelection     = False
+    op.frameMethod          = "ORIGIN"
 
 def frameOptions_sectionInner(self, context, scene, addonPrefs, layout):
 
@@ -223,6 +222,12 @@ def frameOptions_sectionInner(self, context, scene, addonPrefs, layout):
 
     layout.prop(addonPrefs, "useAllRegionsWhenFraming", expand=True)
     layout.prop(addonPrefs, "useAll3DAreasWhenFraming", expand=True)
+
+    layout.separator()
+
+    layout.label(text="Max Vert Limit for Zoom Adjust:")
+    layout.prop(addonPrefs, "maxVertAllowanceForZoomAdjust", expand=True)
+    layout.prop(addonPrefs, "maxVertSelectionAllowanceForZoomAdjust", expand=True)
 
         
 
@@ -311,7 +316,7 @@ def excludedObjsFromIsolate_sectionInner(self, context, scene, bIndent, layout):
             for item in scene.ntzSmFrm.excludedIsolateObjects:
                 row = boxCol.row(align=True)
 
-                op = row.operator('ntz_smrt_frm.unexcludeobj', text="", icon="X")
+                op = row.operator('view3d.ntzsf_del_obj_from_excluded_isolate_objs', text="", icon="X")
                 op.objectToUntemplate = item
 
                 row.label(text=item)
@@ -324,10 +329,10 @@ def excludedObjsFromIsolate_sectionInner(self, context, scene, bIndent, layout):
 
     excludedObjectsSectionCol = excludedObjectsSection.column(align=True)
 
-    op = excludedObjectsSectionCol.operator('ntz_smrt_frm.excludeobj', text="", icon="ADD")
-    op = excludedObjectsSectionCol.operator('ntz_smrt_frm.unexcludeobj', text="", icon="REMOVE")
-    op = excludedObjectsSectionCol.operator('ntz_smrt_frm.refreshexcludedobjlist', text="", icon="FILE_REFRESH")
-    op = excludedObjectsSectionCol.operator('ntz_smrt_frm.clearexcludedobjs', text="", icon="TRASH")
+    op = excludedObjectsSectionCol.operator('view3d.ntzsf_add_obj_to_excluded_isolate_objs', text="", icon="ADD")
+    op = excludedObjectsSectionCol.operator('view3d.ntzsf_del_obj_from_excluded_isolate_objs', text="", icon="REMOVE")
+    op = excludedObjectsSectionCol.operator('view3d.ntzsf_refresh_excluded_isolate_objs', text="", icon="FILE_REFRESH")
+    op = excludedObjectsSectionCol.operator('view3d.ntzsf_clear_all_excluded_isolate_objs', text="", icon="TRASH")
 
 
 def templateOptions_section(self, context, scene, addonPrefs, bIndent, layout):
@@ -352,10 +357,10 @@ def templateOptions_section(self, context, scene, addonPrefs, bIndent, layout):
     templateSelectableCol.scale_y = 1.25
     templateSelectableCol.label(text="Make All Template Objects:")
     templateSelectableRow = templateSelectableCol.row(align=True)
-    op = templateSelectableRow.operator('ntz_smrt_frm.changetemplateselectionstate', text="Selectable", icon="NONE")
+    op = templateSelectableRow.operator('view3d.ntzsf_change_template_selection_state', text="Selectable", icon="NONE")
     op.makeSelectable = True
 
-    op = templateSelectableRow.operator('ntz_smrt_frm.changetemplateselectionstate', text="Un-selectable", icon="NONE")
+    op = templateSelectableRow.operator('view3d.ntzsf_change_template_selection_state', text="Un-selectable", icon="NONE")
     op.makeSelectable = False
 
     templatedObjsCol.separator()
@@ -392,10 +397,10 @@ def templateOptions_section(self, context, scene, addonPrefs, bIndent, layout):
             for item in scene.ntzSmFrm.templatedObjects:
                 row = boxCol.row(align=True)
 
-                op = row.operator('ntz_smrt_frm.untemplatespecificobj', text="", icon="X")
+                op = row.operator('view3d.ntzsf_untemplate_specific_obj', text="", icon="X")
                 op.objectToUntemplate = item
 
-                op = row.operator('ntz_smrt_frm.selobj', text=item, icon="NONE", emboss=True)
+                op = row.operator('view3d.ntzsf_sel_obj_by_name', text=item, icon="NONE", emboss=True)
                 op.objToSelect = item
 
                 selectState = bpy.data.objects[item]
@@ -410,7 +415,7 @@ def templateOptions_section(self, context, scene, addonPrefs, bIndent, layout):
 
     templatedObjectsSectionCol = templatedObjectsSection.column(align=True)
 
-    op = templatedObjectsSectionCol.operator('ntz_smrt_frm.convertobjtotemplate', text="", icon="ADD")
+    op = templatedObjectsSectionCol.operator('view3d.ntzsf_convert_obj_to_template', text="", icon="ADD")
 
     if addonPrefs.defaultTemplateSelectableState == "UNSELECTABLE":
         op.makeSelectable = False
@@ -423,7 +428,7 @@ def templateOptions_section(self, context, scene, addonPrefs, bIndent, layout):
 
     if activeObj is None:
         removeOpRow.enabled = False
-    op = removeOpRow.operator('ntz_smrt_frm.untemplateobjs', text="", icon="REMOVE")
+    op = removeOpRow.operator('view3d.ntzsf_untemplate_objs', text="", icon="REMOVE")
 
-    op = templatedObjectsSectionCol.operator('ntz_smrt_frm.refreshtemplatedobjlist', text="", icon="FILE_REFRESH")
-    op = templatedObjectsSectionCol.operator('ntz_smrt_frm.clearalltemplatedobjs', text="", icon="TRASH")
+    op = templatedObjectsSectionCol.operator('view3d.ntzsf_refresh_template_objs', text="", icon="FILE_REFRESH")
+    op = templatedObjectsSectionCol.operator('view3d.ntzsf_clear_all_template_objs', text="", icon="TRASH")

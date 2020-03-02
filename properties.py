@@ -1,11 +1,11 @@
 import bpy
-from . import misc_functions
+from . import miscFunc
 
 from bpy.props import (StringProperty, BoolProperty, IntProperty, FloatProperty, FloatVectorProperty, EnumProperty, PointerProperty)
 from bpy.types import (Panel, Operator, AddonPreferences, PropertyGroup)
 
 
-class NTZSMFRM_ignitproperties(bpy.types.PropertyGroup):
+class ntzsf_scene_props(bpy.types.PropertyGroup):
 
     preventInfiniteRecursion : BoolProperty (
         name="Prevent Infinite Recursion",

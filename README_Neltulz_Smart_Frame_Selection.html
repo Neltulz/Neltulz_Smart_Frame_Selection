@@ -10,11 +10,11 @@
         <meta name="twitter:card" value="summary">
 
         <!-- Open Graph data -->
-        <meta property="og:title" content="Neltulz - Smart Frame v1.0.14" />
+        <meta property="og:title" content="Neltulz - Smart Frame v1.0.15" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.logichaos.com/neltulz_blender_addons/neltulz_smart_frame_selection/README_Neltulz_Smart_Frame_Selection"/>
         <meta property="og:image" content="https://www.logichaos.com/neltulz_blender_addons/neltulz_smart_frame_selection/readme_html_files/img/logo.png" />
-        <meta property="og:description" content="Updated: 2/24/2020 - A blender addon that provides a quick way to frame selected objects, or frame all objects if nothing is selected." />
+        <meta property="og:description" content="Updated: 3/02/2020 - A blender addon that provides a quick way to frame selected objects, or frame all objects if nothing is selected." />
 
         <link href="readme_html_files/fontawesome-free-5.10.1-web/css/all.min.css" rel="stylesheet">
         <link rel="stylesheet" href="readme_html_files/css/bootstrap-reboot.min.css">
@@ -74,14 +74,14 @@
 
         <div class="main">
 
-            <picture class="mainAddonImage">
-                <source srcset="readme_html_files/img/logo.webp" type="image/webp">
-                <source srcset="readme_html_files/img/logo.png" type="image/png"> 
-                <img src="readme_html_files/img/logo.png" alt="Logo">
+
+            <picture class="mainAddonBanner">
+                <source srcset="readme_html_files/img/banner.jpg" type="image/jpeg">
+                <img src="readme_html_files/img/banner.jpg" alt="Logo">
             </picture>
 
             <h1 class="pageTitle">
-                Neltulz - Smart Frame<br><span class="versionNum">Version: 1.0.14<br>Updated: 2/24/2020</span>
+                <!--Neltulz - Smart Frame<br>--><span class="versionNum">Version: 1.0.15<br>Updated: 3/02/2020</span>
             </h1>
 
             <div class="versionAndDownloadBar">
@@ -143,49 +143,56 @@
                 insert youtube iframe embed code here
             </div>-->
 
-            <h3>Table of Contents</h3>
-
-            <ul>
-                <li><a href="#keyFeatures">Key Features</a></li>
-                <li><a href="#installation">Installation</a></li>
-                <li><a href="#howToUse">How to Use</a></li>
-                <li><a href="#knownIssues">Known Issues & Limitations</a></li>
-                <li><a href="#license">License</a></li>
-                <li><a href="#changelog">Changelog</a></li>
-                <li><a href="#links">Links</a></li>
-                <li><a href="#specialThanks">Special Thanks</a></li>
-                <li><a href="#contact">Contact Me, Report a Bug, or Request a thing</a></li>
-            </ul>
+            <div class="TOC">
+				<ul>
+					<li><a href="#keyFeatures">Features</a></li>
+					<li><a href="#github">Github</a></li>
+					<li><a href="#installation">Install</a></li>
+					<li><a href="#howToUse">How to Use</a></li>
+					<li><a href="#knownIssues">Known Issues</a></li>
+					<li><a href="#license">License</a></li>
+					<li><a href="#changelog">Changelog</a></li>
+					<li><a href="#links">Links</a></li>
+					<li><a href="#credits">Credits</a></li>
+					<li><a href="#contact">Contact</a></li>
+				</ul>
+			</div>
 
             <h3 id="keyFeatures">Key Features</h3>
 
             <ul>
-                <li>Frame <span class="focusText">Selected object</span> or <span class="focusText">vertex/edge/face</span> selection.</li>
-                <li>Frame all if <span class="focusText">nothing</span> is selected.
-                <li>Works in both <span class="focusText">Object Mode</span> and <span class="focusText">Edit Mode</span></li>
-                <li>Automatically <span class="focusText">zoom out</span> the 3D View to a reasonable distance when only <span class="focusText">1 vertex is selected</span>, without disturbing <span class="focusText">orbit</span>. </li>
+                <li>Frame <mark>Selected object</mark> or <mark>vertex/edge/face</mark> selection.</li>
+                <li>Frame all if <mark>nothing</mark> is selected.
+                <li>Works in both <mark>Object Mode</mark> and <mark>Edit Mode</mark></li>
+                <li>Automatically <mark>zoom out</mark> the 3D View to a reasonable distance when only <mark>1 vertex is selected</mark>, without disturbing <mark>orbit</mark>. </li>
             </ul>
+
+            <h3 id="github">Github</h3>
+
+            <div class="indentSection">
+                To see all of the very latest changes, please <a href="https://github.com/Neltulz/Neltulz_Smart_Frame_Selection" target="_blank">visit the github for this addon</a>.
+            </div>
 
             <h3 id="installation">Installation</h3>
 
             <ol>
-                <li>Download the <span class="focusText">Neltulz - Smart Frame</span> zip file anywhere on your
+                <li>Download the <mark>Neltulz - Smart Frame</mark> zip file anywhere on your
                 computer.</li>
                 
                 <li>Run Blender.</li>
                 
-                <li>Go to <span class="focusText">Edit > Preferences</span>.</li>
+                <li>Go to <mark>Edit > Preferences</mark>.</li>
                 
-                <li>In the left sidebar, go to <span class="focusText">Add-ons</span>.</li>
+                <li>In the left sidebar, go to <mark>Add-ons</mark>.</li>
                 
-                <li>At the top right, click <span class="focusText">Install</span>.</li>
+                <li>At the top right, click <mark>Install</mark>.</li>
                 
-                <li>Browse for the <span class="focusText">Neltulz - Smart Frame</span> zip file and click Install Add-on
+                <li>Browse for the <mark>Neltulz - Smart Frame</mark> zip file and click Install Add-on
                 from File <br>Alternatively, you may double click the zip file to install it.</li>
                 
-                <li>Next to Generic: <span class="focusText">Neltulz - Smart Frame</span>, enable the checkbox.</li>
+                <li>Next to Generic: <mark>Neltulz - Smart Frame</mark>, enable the checkbox.</li>
                 
-                <li>At the lower left of the preferences window, click <span class="focusText">Save Preferences</span> and
+                <li>At the lower left of the preferences window, click <mark>Save Preferences</mark> and
                 close the preferences window.</li>
             </ol>
 
@@ -213,21 +220,21 @@
                         <tr>
                             <td class="hotkey primary">F</td>
                             <td class="result success">Frame</td>
-                            <td class="command">ntz_smrt_frm.select</td>
+                            <td class="command">view3d.ntzsf_smart_frame</td>
                             <td class="properties">frameSelection = True<br>isolateSelection = False</td>
                         </tr>
 
                         <tr>
                             <td class="hotkey primary">SHIFT+F</td>
                             <td class="result success">Isolate</td>
-                            <td class="command">ntz_smrt_frm.select</td>
+                            <td class="command">view3d.ntzsf_smart_frame</td>
                             <td class="properties">frameSelection = False<br>isolateSelection = True</td>
                         </tr>
 
                         <tr>
                             <td class="hotkey primary">CTRL+SHIFT+F</td>
                             <td class="result success">Frame & Isolate</td>
-                            <td class="command">ntz_smrt_frm.select</td>
+                            <td class="command">view3d.ntzsf_smart_frame</td>
                             <td class="properties">frameSelection = True<br>isolateSelection = True</td>
                         </tr>
 
@@ -245,8 +252,8 @@
 
             <h3 id="license">License</h3>
 
-            <p>This addon is using the <span class="focusText"><a href="https://choosealicense.com/licenses/gpl-3.0/"
-            target="_blank">GNU GPL v3.0</a></span>.</p>
+            <p>This addon is using the <mark><a href="https://choosealicense.com/licenses/gpl-3.0/"
+            target="_blank">GNU GPL v3.0</a></mark>.</p>
 
             <div class="alert alert-dark quote">
 
@@ -294,9 +301,22 @@
 
                 <ul>
                     <li>
+                        <h5>2020-03-02</h5>
+                        <ul>
+                            <li>Improved <mark>performance</mark> when framing vertices/edges/faces while in edit mode, for objects with very high vertex counts.</li>
+                            <li>Fixed bug that was preventing users from <mark>assigning operators to keymaps</mark> via right click menu.  If you have any custom keymaps for this add-on, you will have to recreate them. Sorry for the inconvenience.</li>
+                            <li>Moved some keymaps from <mark>3D View Generic</mark> to <mark>3D View</mark>.  This should hopefully prevent some keymap unregister errors when unloading the add-on.</li>
+                            <li>Split the <mark>Smart Frame operator</mark> into 4 separate operators so that they are easier to identify in the keymap preferences.</li>
+                            <li>Fixed many bugs that prevented <mark>adjusting zoom</mark> when framing or moving viewport to origin.</li>
+                            <li>Fixed bug that prevented <mark>mesh objects with no mesh data</mark> from being framed.</li>
+                            <li>Fixed bug that prevented <mark>mesh objects with single vertex selection</mark> from being framed.</li>
+                            <li>Fixed bug where <mark>unchecking an object type</mark> such as "Lights" would cause the object to <mark>never frame</mark> when the user has the object selected and tries to frame it.</li>
+                        </ul>
+                    </li>
+                    <li>
                         <h5>2020-02-24</h5>
                         <ul>
-                            <li>Moved a <span class="focusText">ton</span> of settings to the add-on preferences so that they survive a blend file change, or program restart.</li>
+                            <li>Moved a <mark>ton</mark> of settings to the add-on preferences so that they survive a blend file change, or program restart.</li>
                         </ul>
                     </li>
                     <li>
@@ -405,7 +425,7 @@
                     <li>
                         <h5>2019-08-18</h5>
                         <ul>
-                            <li>Changed license from "CC BY 4.0" to <span class="focusText">GNU GPL v3.0</span> because it's easier to select on Github</li>
+                            <li>Changed license from "CC BY 4.0" to <mark>GNU GPL v3.0</mark> because it's easier to select on Github</li>
                         </ul>
                     </li>
                     <li>
@@ -423,7 +443,7 @@
                     <li><a href="https://www.twitch.tv/floatharr" target="_blank">Floatharr's Twitch Stream</a> where he does all things art, and blender work</li>
                 </ul>
 
-            <h3 id="specialThanks">Special Thanks</h3>
+            <h3 id="credits">Credits</h3>
 
             <ul>
                 <li>JordanS</li>

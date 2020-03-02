@@ -15,7 +15,7 @@ def average(lst):
 #   Returned: (0=Multiple modes, 1=Vertice Mode, 2=Edge Mode, 3=Face Mode)
 # -----------------------------------------------------------------------------
 
-def getCurrentSelectMode(self, context):
+def getSelMode():
     #Create empty list
     tempList = []
 
@@ -24,57 +24,21 @@ def getCurrentSelectMode(self, context):
         tempList.append(bool)
     
     #convert list into a tuple
-    tempTuple = tuple(tempList)
-
-    currentSelectMode = int()
-
-    if tempTuple == (True, False, False):       
-        currentSelectMode = 1
-    elif tempTuple == (False, True, False):
-        currentSelectMode = 2
-    elif tempTuple == (False, False, True):
-        currentSelectMode = 3
-    else:
-        pass #(defaults currentSelectMode to 0)
+    currentSelectMode = tuple(tempList)
 
     return currentSelectMode
-# END getCurrentSelectMode(self, context)
+# END getSelMode(self, context)
 
-def getSelectedVerts(self, context, obj, returnMethod):
-
-    if obj.type == "MESH":
-
-        mesh = obj.data
-
-        modeAtBegin = bpy.context.object.mode
-
-        #switch to object mode before getting edgeList
-        if modeAtBegin == "EDIT":
-            bpy.ops.object.mode_set(mode='OBJECT')
-
-        if returnMethod == "VERTS_ONLY":
-            vertList = [v for v in mesh.vertices if v.select]
-        elif returnMethod == "VERT_IDS_ONLY":
-            vertList = [v.index for v in mesh.vertices if v.select]
-        elif returnMethod == "OBJ_NAME_AND_VERT_IDS":
-            vertList = [] #declare
-            for v in mesh.vertices:
-                if v.select:
-                    temp = [{"OBJNAME": obj.name, "VERTID": v.index}]
-                    vertList = vertList + temp
-
-        if modeAtBegin == "EDIT":
-            #switch back to edit mode
-            bpy.ops.object.mode_set(mode='EDIT')
-            
-        return vertList
+def setSelMode( selBoolTuple):
+    bpy.context.tool_settings.mesh_select_mode = selBoolTuple
+# END getSelMode(self, context)
 
 
 def getAllCurvePointsAndHandles(self, context, obj):
     if obj.type == "CURVE":
         curve = obj.data
 
-        #switch to object mode before getting edgeList
+        #switch to object mode
         bpy.ops.object.mode_set(mode='OBJECT')
 
         curvePointList = [p for p in curve.splines.active.bezier_points]
@@ -92,7 +56,7 @@ def getSelectedCurvePointsAndHandles(self, context, obj):
     if obj.type == "CURVE":
         curve = obj.data
 
-        #switch to object mode before getting edgeList
+        #switch to object mode
         bpy.ops.object.mode_set(mode='OBJECT')
 
         curvePointList = [p for p in curve.splines.active.bezier_points if p.select_control_point]
@@ -288,11 +252,26 @@ def getSelObjsFromOutlinerAndViewport(self, context, modeAtBegin):
     return selObjs
 
 
-def viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj):
+def viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjs, activeObj, totalNumVertsSel=0, forceFrameAllVerts=False):
 
     winAreaRegionInfoList = [] #declare
 
-    if self.use_zoomAdjust:
+    self.useZoomAdjust_greenLight = (self.totalVertCount <= addonPrefs.maxVertAllowanceForZoomAdjust) and (totalNumVertsSel <= addonPrefs.maxVertSelectionAllowanceForZoomAdjust)
+
+    if forceFrameAllVerts:
+        
+        setSelMode( (True, False, False) )
+
+        for obj in bpy.context.objects_in_mode:
+            bm = bmesh.from_edit_mesh(obj.data)
+
+            for v in bm.verts:
+                v.select = True
+
+            bm.select_flush(True) #force faces to also sorta be selected so that framing is correct with multiple mesh objects in edit mode
+            bmesh.update_edit_mesh(obj.data, False, False)
+
+    if self.use_zoomAdjust and self.useZoomAdjust_greenLight:
 
         viewClipStartList = [] #declare
         self.viewSelectMethod = "NONE" #declare
@@ -307,31 +286,33 @@ def viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, 
             #determine which view select method to use
             if activeObj is not None:
                 self.viewSelectMethod = "OBJ"
-
+                
                 if activeObj.type == "MESH":
                     if modeAtBegin == "EDIT":
 
-                        #get list of selected verts
-                        for obj in selObjs:
-                            if obj.type == "MESH":
-                                verts = getSelectedVerts(self, context, obj, "OBJ_NAME_AND_VERT_IDS")
-                                allSelVerts = allSelVerts + verts
-                                if len(allSelVerts) >= 1:
-                                    objWithSingleVert = obj
-                                    break
+                        allSelVertIDs = [] #declare
+                        for obj in bpy.context.objects_in_mode:
+                            bm = bmesh.from_edit_mesh(obj.data)
 
-                        if len(allSelVerts) == 1:
+                            for v in bm.verts:
+                                if v.select:
+                                    selVertIDs = [{"OBJNAME": obj.name, "VERTID": v.index}]
+                                    allSelVertIDs = allSelVertIDs + selVertIDs
+
+                        if len(allSelVertIDs) == 1:
                             self.viewSelectMethod = "SINGLE_VERT"
+                            _dict = selVertIDs[0]
+                            objWithSingleVert = bpy.data.objects[ _dict['OBJNAME'] ]
 
-                        elif len(allSelVerts) == 2:
+                        elif len(allSelVertIDs) == 2:
                             self.viewSelectMethod = "EDGE"
 
-                        elif len(allSelVerts) > 2:
+                        elif len(allSelVertIDs) > 2:
                             self.viewSelectMethod = "FACE"
 
             #determine the bounding box size
             if self.viewSelectMethod == "SINGLE_VERT":
-                self.viewSelectionWidth = max_dim_from_single_vert_and_adjacent_verts(self, context, scene, addonPrefs, allSelVerts, objWithSingleVert)
+                self.viewSelectionWidth = max_dim_from_single_vert_and_adjacent_verts(self, context, scene, addonPrefs, objWithSingleVert)
                 
             elif self.viewSelectMethod == "EDGE":
                 self.viewSelectionWidth = ( max_dim_from_selection(self, context, scene, addonPrefs) * 1)
@@ -352,7 +333,7 @@ def viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, 
             for area in win.screen.areas:
                 if area.type == 'VIEW_3D':
                     
-                    if self.use_zoomAdjust:
+                    if self.use_zoomAdjust and self.useZoomAdjust_greenLight:
                         
                         viewClipStart = area.spaces.active.clip_start
                         viewClipStartList.append(viewClipStart)
@@ -368,7 +349,7 @@ def viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, 
 
     for i, winAreaRegionInfo in enumerate(winAreaRegionInfoList):
 
-        if self.use_zoomAdjust:
+        if self.use_zoomAdjust and self.useZoomAdjust_greenLight:
 
             if bUseAll3DAreas:
                 area = winAreaRegionInfoList[i]['area']
@@ -381,38 +362,81 @@ def viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, 
 
         bpy.ops.view3d.view_selected(winAreaRegionInfo, self.invokeView, use_all_regions=bUseAllRegions)
 
-        if self.use_zoomAdjust:
+        if self.use_zoomAdjust and self.useZoomAdjust_greenLight:
             #return clip start values back to their original value after framing
             area.spaces.active.clip_start = viewClipStartList[i]
 
+    
+    if forceFrameAllVerts:
+        for obj in selObjs:
+            bm = bmesh.from_edit_mesh(obj.data)
+            for v in bm.verts:
+                v.select = False
+            
+            bm.select_flush(False) #force faces to be deselected
+            bmesh.update_edit_mesh(obj.data, False, False)
+
+        setSelMode(self.selModeAtBegin)
+    
+    
+
 
     
-   
-def viewAll(self, context, bUseAll3DAreas):
 
-    winAreaRegionInfoList = []
+def viewAll(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas):
+    # Note: Only use this function in object mode - Never edit mode.
 
-    if bUseAll3DAreas:
-        # Check for 3D Views
-        for win in context.window_manager.windows:
-            for area in win.screen.areas:
-                if area.type == 'VIEW_3D':
+    selObjsTemp = [] #declare
 
-                    winAreaRegionInfo = {'window': win, 'area': area, 'region': area.regions[-1]}
-                    winAreaRegionInfoList.append(winAreaRegionInfo)
-                    
+    #select all objects except ones excluded from framing
+    for obj in scene.objects:
+
+        try:
+            frameObjType = addonPrefs.frameObjTypeList2[obj.type]
+        except:
+            frameObjType = None
+
+        #known object types:
+        if frameObjType is not None:
+
+            frameTypeState = getattr(addonPrefs, frameObjType)
+
+            if frameTypeState:
+                obj.select_set(True)
+                selObjsTemp.append(obj)
+
+        #unknown object type
+        else:
+            obj.select_set(True)
+            selObjsTemp.append(obj)
+
+    #declare an active object for the viewSelected function
+    if len(selObjsTemp) > 0:
+        activeObjTemp = selObjsTemp[0]
+        viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, selObjsTemp, activeObjTemp)
     else:
-        winAreaRegionInfoList = [context.copy()]
-
-    for winAreaRegionInfo in winAreaRegionInfoList:
-
-        #view all
-        bpy.ops.view3d.view_all(winAreaRegionInfo, self.invokeView, center=False)
+        view2Origin(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas)
 
 
-def view2Origin(self, context, bUseAllRegions, bUseAll3DAreas):
 
+    #deselect all objects
+    for obj in scene.objects:
+        obj.select_set(False)
+
+
+
+def view2Origin(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas):
+
+    #create obj
     bpy.ops.object.empty_add(type='PLAIN_AXES', radius=5, location=(0, 0, 0))
+    
+    #if empty object type view was disabled, it must be re-enabled temporarily in order to determine the selected object
+    emptyViewWasDisabled = False #declare
+    if not context.space_data.show_object_viewport_empty:
+        emptyViewWasDisabled = True
+        context.space_data.show_object_viewport_empty = True
+
+    tempEmptyObj = context.selected_objects[0]
 
     winAreaRegionInfoList = []
 
@@ -432,9 +456,12 @@ def view2Origin(self, context, bUseAllRegions, bUseAll3DAreas):
     for winAreaRegionInfo in winAreaRegionInfoList:
 
         #view to origin
-        bpy.ops.view3d.view_selected(winAreaRegionInfo, self.invokeView, use_all_regions=bUseAllRegions)
+        viewSelected(self, context, scene, addonPrefs, modeAtBegin, bUseAllRegions, bUseAll3DAreas, [tempEmptyObj], tempEmptyObj)
 
     bpy.ops.object.delete(use_global=False, confirm=False)
+
+    if emptyViewWasDisabled:
+        context.space_data.show_object_viewport_empty = False
 
 def bbox_from_selection():
     #returns the bounding box of a selection.  Special thanks and Source: iceythe
@@ -462,38 +489,39 @@ def bbox_from_selection():
 
     return bbox_vecs
 
-def max_dim_from_single_vert_and_adjacent_verts(self, context, scene, addonPrefs, allSelVerts, objWithSingleVert):
-    startVert = allSelVerts[0]
-    matrix = objWithSingleVert.matrix_world
 
-    startVertWorldLoc = matrix @ objWithSingleVert.data.vertices[int(startVert['VERTID'])].co
+def max_dim_from_single_vert_and_adjacent_verts(self, context, scene, addonPrefs, objWithSingleVert):
     
+    bm = bmesh.from_edit_mesh(objWithSingleVert.data)
+    mat = objWithSingleVert.matrix_world
 
-    bpy.ops.mesh.select_more()
+    #find linked vertices - Source: https://blenderartists.org/t/code-snippet-with-bmesh-find-the-linked-vertices/534077
+    selectedVert = [] #declare
+    linkedVerts = [] #declare
+    for i_0, v_0 in enumerate(bm.verts):
+        if v_0.select:
+            selectedVert.append( mat @ v_0.co )
+        if v_0.select and v_0.is_valid:
+            for i_1, e_0 in enumerate(v_0.link_edges):
+                linkedVerts.append(mat @ e_0.other_vert(v_0).co)
 
-    adjacentVerts = getSelectedVerts(self, context, objWithSingleVert, "OBJ_NAME_AND_VERT_IDS")
-    adjacentVerts.remove(startVert)
+    all_vcos = [] #declare
+    all_vcos.extend(selectedVert)
+    all_vcos.extend(linkedVerts)
 
-    edgeLengths = [] #declare
-
-    for v in adjacentVerts:
-        vWorldLoc = matrix @ objWithSingleVert.data.vertices[int(v['VERTID'])].co
-
-        distance = (vWorldLoc - startVertWorldLoc).length
-
-        edgeLengths.append(distance)
-
-    bpy.ops.mesh.select_all(action='DESELECT')
-    bpy.ops.object.mode_set(mode='OBJECT') # switch to object mode before re-selecting the vert
-    objWithSingleVert.data.vertices[ int(startVert['VERTID']) ].select = True
-    bpy.ops.object.mode_set(mode='EDIT') # switch back to edit mode
+    it = numpy.fromiter(chain.from_iterable(all_vcos), dtype=float)
+    it.shape = (len(all_vcos), 3)
+    _min, _max = Vector(it.min(0).tolist()), Vector(it.max(0).tolist())
 
     if addonPrefs.calcZoomDistanceMethod == "MIN":
-        result = min(edgeLengths)
+        result = min((_max - _min))
     elif addonPrefs.calcZoomDistanceMethod == "MAX": 
-        result = max(edgeLengths)
+        result = max((_max - _min))
     elif addonPrefs.calcZoomDistanceMethod == "AVG":
-        result = average(edgeLengths)
+        result = average((_max - _min))
+
+    if result == 0:
+        result = 1
 
     return result
 
@@ -548,5 +576,9 @@ def max_dim_from_objs_or_empties(self, context, scene, addonPrefs, selObjs):
         result = max((_max - _min))
     elif addonPrefs.calcZoomDistanceMethod == "AVG":
         result = average((_max - _min))
+
+    #prevent zero result
+    if result == 0:
+        result = 1
 
     return result

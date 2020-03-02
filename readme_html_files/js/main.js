@@ -36,8 +36,7 @@ $( document ).ready(function() {
         $('#licenseModal .modal-body').removeClass('iframeLoaded')
     })
 
-
-
+    
 
     
 });
