@@ -582,3 +582,67 @@ def max_dim_from_objs_or_empties(self, context, scene, addonPrefs, selObjs):
         result = 1
 
     return result
+
+
+def getOutliners(self, context):
+    outliners = [] #declare
+    for win in context.window_manager.windows:
+        for area in win.screen.areas:
+            if area.type == 'OUTLINER':
+                outliners.append({'window' : win, 'area': area})
+
+    return outliners
+
+def expand_or_collapse_outliners(self, context, expand=False, outliners=None):
+
+    if outliners is None:
+        outliners = getOutliners(self, context)
+
+    for outliner in outliners:
+        win = outliner['window']
+        area = outliner['area']
+        contextOverride = {'window': win, 'screen': win.screen, 'area': area}
+
+        if expand:
+            bpy.ops.outliner.show_hierarchy(contextOverride)
+
+        else:
+            # horribly sloppy implementation
+            for i in range(0,10):
+                bpy.ops.outliner.show_one_level(contextOverride, open=False)
+
+def expand_selected_objs_in_outliner(self, context, selObjs=None, outliners=None, activeObj=None):
+
+    if activeObj is None:
+        activeObj = context.view_layer.objects.active
+
+    if selObjs is None:
+        selObjs = bpy.context.selected_objects
+
+    if outliners is None:
+        outliners = getOutliners(self, context)
+
+    for obj in selObjs:
+        context.view_layer.objects.active = obj #set object as active object
+
+        for outliner in outliners:
+            win = outliner['window']
+            area = outliner['area']
+
+            contextOverride = {'window': win, 'screen': win.screen, 'area': area}
+
+            bpy.ops.outliner.show_active(contextOverride)
+
+    if activeObj is not None:
+        context.view_layer.objects.active = activeObj #reset Active Object
+
+# END expand_selected_objs_in_outliner()
+
+
+def redraw_all_outliners(self, context, outliners=None):
+
+    if outliners is None:
+        outliners = getOutliners(self, context)
+
+    for outliner in outliners:
+        outliner['area'].tag_redraw() #redraw outliner

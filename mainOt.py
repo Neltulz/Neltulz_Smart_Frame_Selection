@@ -268,6 +268,25 @@ def _execute(self, context):
         #if there's something selected...
         elif len(selObjs) > 0:
 
+            
+            if addonPrefs.expandSelectedObjsInOutliner:
+                if self.frameSelection:
+
+                    #    Find and Expand selected objects in each outliner
+                    # -----------------------------------------------------------------------------
+
+                    #store a list of outliners
+                    outliners = miscFunc.getOutliners(self, context)
+
+                    if addonPrefs.collapseUnselectedObjsInOutliner:
+
+                        miscFunc.expand_or_collapse_outliners(self, context, expand=False, outliners=outliners)
+                        
+                    
+                    miscFunc.expand_selected_objs_in_outliner(self, context, selObjs=selObjs, outliners=outliners, activeObj=activeObj)
+
+
+
             if activeObj == None:
                 bpy.context.view_layer.objects.active = selObjs[0]
                 activeObj = selObjs[0]
@@ -440,7 +459,6 @@ def _execute(self, context):
                     
             elif objectMode == "OBJECT":
 
-                
 
                 #frame selection
                 if self.frameSelection:
@@ -459,6 +477,10 @@ def _execute(self, context):
 
                     else:
                         miscFunc.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
+                
+
+                        
+
 
             elif objectMode == "EDIT_GPENCIL":
                 if activeObj.type == "GPENCIL":
@@ -495,8 +517,6 @@ def _execute(self, context):
 
                         else:
                             miscFunc.hideUnselected_Objs(self, context, scene, addonPrefs, selObjs, activeObj)
-
-                
 
             elif objectMode == "POSE":
                 if activeObj.type == "ARMATURE":

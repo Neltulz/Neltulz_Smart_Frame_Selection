@@ -92,7 +92,7 @@ class VIEW3D_PT_ntzsf_options(Panel):
 
 
 class VIEW3D_PT_ntzsf_sb_panel(Panel):
-    bl_label = "Smart Frame v1.0.15"
+    bl_label = "Smart Frame v1.0.16"
     bl_category = "Neltulz"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"

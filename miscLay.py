@@ -210,6 +210,19 @@ def frameOptions_sectionInner(self, context, scene, addonPrefs, layout):
 
     layout.separator()
 
+    layout.prop(addonPrefs, "expandSelectedObjsInOutliner", expand=True)
+
+    
+    layout.separator()
+
+    layout.label(text="Experimental:")
+    row = layout.row(align=True)
+    row.enabled = addonPrefs.expandSelectedObjsInOutliner
+    row.prop(addonPrefs, "collapseUnselectedObjsInOutliner", expand=True)
+    
+
+    layout.separator()
+
     label = layout.label(text="Calculate Zoom based on:")
     zoomDistanceMethodRow = layout.row(align=True)
     zoomDistanceMethodRow.prop(addonPrefs, "calcZoomDistanceMethod", expand=True)

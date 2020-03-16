@@ -70,7 +70,7 @@ class VIEW3D_OT_ntzsf_addon_prefs(AddonPreferences):
     navTabs : EnumProperty (
         items       = navTabs_List,
         name        = "Navigation Tabs",
-        default     = "FRAME"
+        default     = "UILAY"
     )
 
     category: StringProperty(
@@ -114,6 +114,17 @@ class VIEW3D_OT_ntzsf_addon_prefs(AddonPreferences):
     bUseSmoothFraming : BoolProperty (
         name="Smoothly Frame",
         default = True,
+    )
+
+    expandSelectedObjsInOutliner : BoolProperty (
+        name        = "Expand Selected Objects in Outliner(s)",
+        default     = True,
+    )
+
+    collapseUnselectedObjsInOutliner : BoolProperty (
+        name        = 'Collapse Unselected Objects in Outliner(s)',
+        description = 'Note: This is implemented very sloppily',
+        default     = False,
     )
 
     calcZoomDistanceMethod_List = [
@@ -309,7 +320,7 @@ class VIEW3D_OT_ntzsf_addon_prefs(AddonPreferences):
         navRow.prop(self, 'navTabs', expand=True)
 
 
-        box = lay.box()
+        box = lay.box().column(align=True)
 
         labelJustify = "RIGHT"
         
@@ -320,16 +331,29 @@ class VIEW3D_OT_ntzsf_addon_prefs(AddonPreferences):
             labelWidth = 7
             propWidth = 15
 
-            miscLay.createProp(self, context, None, True,           "Sidebar Panel",                      self, "sidebarPanelSize",      propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
-            miscLay.createProp(self, context, None, bTabCatEnabled, "Tab Category",                       self, "category",              propHeight, labelWidth, propWidth, labelJustify, propJustify, "",    True, False, box)
-            miscLay.createProp(self, context, None, True,           "Popup & Pie Panel",                  self, "popupAndPiePanelSize",  propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
+            miscLay.createProp(self, context, None, True,           "Sidebar Panel",                      self, "sidebarPanelSize",                 propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
+
+            box.separator()
+
+            miscLay.createProp(self, context, None, bTabCatEnabled, "Tab Category",                       self, "category",                         propHeight, labelWidth, propWidth, labelJustify, propJustify, "",    True, False, box)
+            
+            box.separator()
+            
+            miscLay.createProp(self, context, None, True,           "Popup & Pie Panel",                  self, "popupAndPiePanelSize",             propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
 
         elif self.navTabs == "FRAME":
             propHeight = 1
             labelWidth = 7
             propWidth = 15
             
-            miscLay.createProp(self, context, None, True,           "",                                   self, "bUseSmoothFraming",     propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
+            miscLay.createProp(self, context, None, True,           "",                                   self, "bUseSmoothFraming",                propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
+            miscLay.createProp(self, context, None, True,           "",                                   self, "expandSelectedObjsInOutliner",     propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
+
+            box.label(text="Experimental:")
+            miscLay.createProp(self, context, None, self.expandSelectedObjsInOutliner,           "",                                   self, "collapseUnselectedObjsInOutliner", propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
+            
+
+            box.separator()
             
 
             
@@ -359,6 +383,8 @@ class VIEW3D_OT_ntzsf_addon_prefs(AddonPreferences):
 
             propRow = col2Container.row(align=True)
             propRow.prop(self, "calcZoomDistanceMethod", expand=True)
+
+            box.separator()
 
             # When nothing is selected, frame:
             #-----------------------------------------------------------------------------------------------------------
@@ -486,6 +512,8 @@ class VIEW3D_OT_ntzsf_addon_prefs(AddonPreferences):
             propRow.prop(self, 'hideFloorOnIsolate', text="Floor", toggle=False, icon="MESH_GRID")
 
             propRow.prop(self, 'hideAxesOnIsolate',  text="Axes", toggle=False, icon="EMPTY_AXIS")
+
+            box.separator()
 
 
             miscLay.createProp(self, context, None, True,           "",                                    self, "useExtremeHideOnIsolate",  propHeight, labelWidth, propWidth, labelJustify, propJustify, None,  True, False, box)
