@@ -631,7 +631,8 @@ def expand_selected_objs_in_outliner(self, context, selObjs=None, outliners=None
 
             contextOverride = {'window': win, 'screen': win.screen, 'area': area}
 
-            bpy.ops.outliner.show_active(contextOverride)
+            with bpy.context.temp_override(contextOverride):
+                bpy.ops.outliner.show_active()
 
     if activeObj is not None:
         context.view_layer.objects.active = activeObj #reset Active Object
